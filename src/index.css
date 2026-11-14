@@ -4,6 +4,57 @@
   @import '@xyflow/react/dist/style.css';
 }
 
+@theme inline {
+  --color-plot-canvas: var(--plot-canvas);
+  --color-plot-surface: var(--plot-surface);
+  --color-plot-surface-muted: var(--plot-surface-muted);
+  --color-plot-border: var(--plot-border);
+  --color-plot-text: var(--plot-text);
+  --color-plot-text-muted: var(--plot-text-muted);
+  --color-plot-accent: var(--plot-accent);
+  --color-plot-accent-foreground: var(--plot-accent-foreground);
+  --color-plot-accent-soft: var(--plot-accent-soft);
+  --color-plot-accent-soft-foreground: var(--plot-accent-soft-foreground);
+  --color-plot-toolbar-hover: var(--plot-toolbar-hover);
+  --color-plot-focus-ring: var(--plot-focus-ring);
+  --color-plot-resolved: var(--plot-resolved);
+  --color-plot-resolved-soft: var(--plot-resolved-soft);
+}
+
+:root {
+  --plot-canvas: #f4f4fa;
+  --plot-surface: #ffffff;
+  --plot-surface-muted: #f3f2f8;
+  --plot-border: #e7e5ef;
+  --plot-text: #201e32;
+  --plot-text-muted: #55536e;
+  --plot-accent: #613ce7;
+  --plot-accent-foreground: #ffffff;
+  --plot-accent-soft: #eee9ff;
+  --plot-accent-soft-foreground: #482ab7;
+  --plot-toolbar-hover: #f0ecfc;
+  --plot-focus-ring: #7655e8;
+  --plot-resolved: #126049;
+  --plot-resolved-soft: #e1f5eb;
+}
+
+[data-theme='dark'] {
+  --plot-canvas: #181925;
+  --plot-surface: #222333;
+  --plot-surface-muted: #2c2d41;
+  --plot-border: #38394f;
+  --plot-text: #f1effe;
+  --plot-text-muted: #b3b0c9;
+  --plot-accent: #ac94ff;
+  --plot-accent-foreground: #211438;
+  --plot-accent-soft: #373050;
+  --plot-accent-soft-foreground: #d6c6ff;
+  --plot-toolbar-hover: #38304f;
+  --plot-focus-ring: #c4acff;
+  --plot-resolved: #99e1be;
+  --plot-resolved-soft: #243e39;
+}
+
 *,
 *::before,
 *::after {
