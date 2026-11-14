@@ -1,9 +1,11 @@
+import Board from "@/components/board/Board";
+
 function App() {
   return (
     <main>
-      <h1>Plot</h1>
+      <Board />
     </main>
-  )
+  );
 }
 
-export default App
+export default App;
