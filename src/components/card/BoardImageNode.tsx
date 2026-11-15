@@ -7,7 +7,12 @@ export default function BoardImageNode({
   selected,
 }: NodeProps<ImageNode>) {
   return (
-    <BoardCard title={data.label} subtitle={data.subtitle} selected={selected}>
+    <BoardCard
+      title={data.label}
+      subtitle={data.subtitle}
+      selected={selected}
+      badge="Drawing"
+    >
       <img
         src={data.src}
         alt={data.alt}
