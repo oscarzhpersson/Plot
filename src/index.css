@@ -1,7 +1,7 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @layer base {
-  @import '@xyflow/react/dist/style.css';
+  @import "@xyflow/react/dist/style.css";
 }
 
 @theme {
@@ -50,7 +50,7 @@
   --plot-resolved-soft: #e1f5eb;
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   --plot-canvas: #181925;
   --plot-surface: #222333;
   --plot-surface-muted: #2c2d41;
@@ -84,6 +84,10 @@ body {
     @apply motion-safe:transition-colors motion-safe:duration-(--plot-motion-feedback) motion-safe:ease-(--plot-motion-ease-feedback);
   }
 
+  .plot-toolbar-button[aria-pressed="true"] {
+    @apply bg-plot-accent-soft text-plot-accent-soft-foreground;
+  }
+
   .plot-toolbar-icon {
     @apply motion-safe:transition-transform motion-safe:duration-(--plot-motion-feedback) motion-safe:ease-(--plot-motion-ease-feedback);
   }
@@ -101,21 +105,23 @@ body {
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .plot-menu[data-side='top'] {
+    .plot-menu[data-side="top"] {
       --plot-menu-offset: var(--plot-motion-overlay-distance);
     }
 
-    .plot-menu[data-side='bottom'] {
+    .plot-menu[data-side="bottom"] {
       --plot-menu-offset: calc(-1 * var(--plot-motion-overlay-distance));
     }
 
-    .plot-menu[data-state='open'] {
-      animation: plot-menu-enter var(--plot-motion-enter) var(--plot-motion-ease-enter) both;
+    .plot-menu[data-state="open"] {
+      animation: plot-menu-enter var(--plot-motion-enter)
+        var(--plot-motion-ease-enter) both;
     }
 
-    .plot-menu[data-state='closed'] {
+    .plot-menu[data-state="closed"] {
       pointer-events: none;
-      animation: plot-menu-exit var(--plot-motion-exit) var(--plot-motion-ease-exit) both;
+      animation: plot-menu-exit var(--plot-motion-exit)
+        var(--plot-motion-ease-exit) both;
     }
   }
 }
