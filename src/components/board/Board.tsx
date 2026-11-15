@@ -9,29 +9,26 @@ import {
   type OnConnect,
 } from "@xyflow/react";
 import BoardMap from "./BoardMap";
-import BoardNoteNode, { type NoteNode } from "@/components/card/BoardNoteNode";
 import { loadBoard, saveBoard } from "@/data/boardStorage";
+import BoardNoteNode from "@/components/card/BoardNoteNode";
+import BoardImageNode from "@/components/card/BoardImageNode";
+import type { BoardNode } from "@/data/boardSchema";
 
-const nodeTypes = { note: BoardNoteNode };
+const nodeTypes = {
+  note: BoardNoteNode,
+  image: BoardImageNode,
+};
 
 export default function Board() {
   const [initialBoard] = useState(loadBoard);
 
-  const [nodes, , onNodesChange] = useNodesState<NoteNode>(initialBoard.nodes);
+  const [nodes, , onNodesChange] = useNodesState<BoardNode>(initialBoard.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialBoard.edges);
 
   useEffect(() => {
     if (nodes.some((node) => node.dragging)) return;
 
-    saveBoard({
-      nodes: nodes.map(({ id, type, position, data }) => ({
-        id,
-        type,
-        position,
-        data,
-      })),
-      edges,
-    });
+    saveBoard({ nodes, edges });
   }, [nodes, edges]);
 
   const onConnect = useCallback<OnConnect>(

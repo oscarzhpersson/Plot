@@ -9,6 +9,17 @@
         "subtitle": "Rev B checks",
         "text": "Check the mounting clearance."
       }
+    },
+    {
+      "id": "3b894661-8c17-4ee8-8d62-72feb92fcc1a",
+      "type": "image",
+      "position": { "x": 620, "y": 0 },
+      "data": {
+        "label": "Mounting drawing",
+        "subtitle": "Top view · mm",
+        "src": "/image-sample-1.png",
+        "alt": "Dimensioned drawing of a bracket with two circular holes and a curved slot"
+      }
     }
   ],
   "edges": []

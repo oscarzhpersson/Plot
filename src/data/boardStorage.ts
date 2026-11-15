@@ -1,30 +1,13 @@
-import type { Edge } from "@xyflow/react";
-import type { NoteNode } from "@/components/card/BoardNoteNode";
 import seed from "./board.json";
-
-type BoardSnapshot = {
-  nodes: Pick<NoteNode, "id" | "type" | "position" | "data">[];
-  edges: Edge[];
-};
+import { boardSchema, type BoardSnapshot } from "./boardSchema";
 
 const storageKey = "plot.board.v1";
-
-const seedBoard: BoardSnapshot = {
-  nodes: seed.nodes.map(({ type, ...node }) => {
-    if (type !== "note") throw new Error(`Unknown node type: ${type}`);
-    return { ...node, type };
-  }),
-  edges: seed.edges,
-};
+const seedBoard = boardSchema.parse(seed);
 
 export function loadBoard(): BoardSnapshot {
   try {
     const raw = localStorage.getItem(storageKey);
-    const saved = raw ? (JSON.parse(raw) as BoardSnapshot | null) : null;
-
-    if (saved && Array.isArray(saved.nodes) && Array.isArray(saved.edges)) {
-      return saved;
-    }
+    if (raw !== null) return boardSchema.parse(JSON.parse(raw));
   } catch (error: unknown) {
     console.warn(
       // TODO: Given time add a toast error.
@@ -38,7 +21,8 @@ export function loadBoard(): BoardSnapshot {
 
 export function saveBoard(board: BoardSnapshot) {
   try {
-    localStorage.setItem(storageKey, JSON.stringify(board));
+    const snapshot = boardSchema.parse(board);
+    localStorage.setItem(storageKey, JSON.stringify(snapshot));
   } catch (error: unknown) {
     console.warn(
       // TODO: Given time add a toast error.

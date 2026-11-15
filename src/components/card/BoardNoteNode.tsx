@@ -1,10 +1,6 @@
-import type { Node, NodeProps } from "@xyflow/react";
+import type { NodeProps } from "@xyflow/react";
+import type { NoteNode } from "@/data/boardSchema";
 import BoardCard from "./BoardCard";
-
-export type NoteNode = Node<
-  { label: string; subtitle: string; text: string },
-  "note"
->;
 
 export default function BoardNoteNode({ data }: NodeProps<NoteNode>) {
   return (
