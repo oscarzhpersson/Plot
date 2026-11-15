@@ -6,13 +6,7 @@ import { boardMotion, viewportAnimation } from "@/lib/motion";
 
 const zoomPresets = [50, 75, 100, 150, 200]; // TODO: Move to external file
 
-type ZoomPresetMenuProps = {
-  triggerClassName: string;
-};
-
-export default function ZoomPresetMenu({
-  triggerClassName,
-}: ZoomPresetMenuProps) {
+export default function ZoomPresetMenu() {
   const { zoomTo } = useReactFlow();
   const { zoom } = useViewport();
   const zoomPercent = Math.round(zoom * 100);
@@ -22,10 +16,15 @@ export default function ZoomPresetMenu({
       <DropdownMenu.Trigger
         type="button"
         aria-label={`Zoom presets, current zoom ${zoomPercent}%`}
-        className={`flex h-8.5 min-w-16 items-center justify-center gap-1 px-2 text-sm tabular-nums data-[state=open]:bg-plot-accent-soft data-[state=open]:text-plot-accent-soft-foreground ${triggerClassName}`}
+        className="plot-toolbar-button flex h-8.5 min-w-16 items-center justify-center gap-1 px-2 text-sm tabular-nums data-[state=open]:bg-plot-accent-soft data-[state=open]:text-plot-accent-soft-foreground"
       >
         {zoomPercent}%
-        <ChevronDown size={12} strokeWidth={1.75} aria-hidden="true" />
+        <ChevronDown
+          size={12}
+          strokeWidth={1.75}
+          className="plot-toolbar-icon"
+          aria-hidden="true"
+        />
       </DropdownMenu.Trigger>
       <DropdownMenu.Content
         aria-label="Zoom presets"

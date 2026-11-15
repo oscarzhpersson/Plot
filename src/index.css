@@ -79,6 +79,27 @@ body {
 }
 
 @layer components {
+  .plot-toolbar-button {
+    @apply cursor-pointer rounded-lg hover:bg-plot-toolbar-hover active:bg-plot-accent-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-plot-focus-ring;
+    @apply motion-safe:transition-colors motion-safe:duration-(--plot-motion-feedback) motion-safe:ease-(--plot-motion-ease-feedback);
+  }
+
+  .plot-toolbar-icon {
+    @apply motion-safe:transition-transform motion-safe:duration-(--plot-motion-feedback) motion-safe:ease-(--plot-motion-ease-feedback);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @media (hover: hover) {
+      .plot-toolbar-button:hover .plot-toolbar-icon {
+        scale: 1.125;
+      }
+    }
+
+    .plot-toolbar-button:active .plot-toolbar-icon {
+      scale: 0.95;
+    }
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     .plot-menu[data-side='top'] {
       --plot-menu-offset: var(--plot-motion-overlay-distance);
