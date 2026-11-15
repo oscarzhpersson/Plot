@@ -2,9 +2,12 @@ import type { NodeProps } from "@xyflow/react";
 import type { ImageNode } from "@/data/boardSchema";
 import BoardCard from "./BoardCard";
 
-export default function BoardImageNode({ data }: NodeProps<ImageNode>) {
+export default function BoardImageNode({
+  data,
+  selected,
+}: NodeProps<ImageNode>) {
   return (
-    <BoardCard title={data.label} subtitle={data.subtitle}>
+    <BoardCard title={data.label} subtitle={data.subtitle} selected={selected}>
       <img
         src={data.src}
         alt={data.alt}
