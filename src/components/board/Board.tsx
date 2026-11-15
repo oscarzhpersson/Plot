@@ -6,11 +6,11 @@ import {
   Background,
   useEdgesState,
   useNodesState,
-  MiniMap,
   type Edge,
   type Node,
   type OnConnect,
 } from "@xyflow/react";
+import BoardMap from "./BoardMap";
 
 type BoardNode = Node<{ label: string }>;
 
@@ -47,7 +47,7 @@ export default function Board() {
         proOptions={{ hideAttribution: true }}
       >
         <Background gap={20} size={1} />
-        <MiniMap />
+        <BoardMap />
         <BoardToolbar />
       </ReactFlow>
     </div>
