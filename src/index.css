@@ -79,6 +79,50 @@ body {
 }
 
 @layer components {
+  .plot-resize-corner {
+    z-index: 2;
+    opacity: 0;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--plot-accent);
+    border-radius: 4px;
+    background: var(--plot-surface);
+  }
+
+  .plot-resize-corner::before {
+    position: absolute;
+    inset: -4px;
+    content: "";
+  }
+
+  .plot-resize-corner:hover,
+  .plot-resize-corner:active {
+    opacity: 1;
+  }
+
+  .plot-resize-corner:active {
+    background: var(--plot-accent);
+  }
+
+  .plot-resize-edge {
+    z-index: 1;
+    border: 0;
+  }
+
+  /* Keep most of the resize target inside the card, away from connection dots. */
+  .plot-resize-edge:is(.left, .right) {
+    width: 14px;
+  }
+
+  .plot-resize-edge:is(.top, .bottom) {
+    height: 14px;
+  }
+
+  .plot-resize-edge.left { transform: translateX(-25%); }
+  .plot-resize-edge.right { transform: translateX(-75%); }
+  .plot-resize-edge.top { transform: translateY(-25%); }
+  .plot-resize-edge.bottom { transform: translateY(-75%); }
+
   .plot-toolbar-button {
     @apply cursor-pointer rounded-lg hover:bg-plot-toolbar-hover active:bg-plot-accent-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-plot-focus-ring;
     @apply motion-safe:transition-colors motion-safe:duration-(--plot-motion-feedback) motion-safe:ease-(--plot-motion-ease-feedback);

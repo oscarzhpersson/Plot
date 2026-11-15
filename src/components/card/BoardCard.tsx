@@ -49,7 +49,13 @@ export default function BoardCard({
   return (
     <div className="group relative h-full w-full">
       {generateCardHandles(handleVisibility, isConnected)}
-      <NodeResizer isVisible={selected || nearby} minWidth={220} minHeight={150} />
+      <NodeResizer
+        isVisible={selected && !connecting}
+        minWidth={220}
+        minHeight={150}
+        handleClassName="plot-resize-corner"
+        lineClassName="plot-resize-edge"
+      />
       <article
         className={`flex h-full w-full cursor-default flex-col rounded-2xl border ${selected ? "border-plot-accent" : "border-plot-border"} bg-plot-surface p-4 text-plot-text shadow active:cursor-grabbing`}
       >

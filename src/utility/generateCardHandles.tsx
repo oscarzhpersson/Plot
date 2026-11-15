@@ -11,7 +11,7 @@ export default function generateCardHandles(
         id={side}
         type="source"
         position={side}
-        style={{ [side]: -10 }}
+        style={{ [side]: -15 }}
         className={`size-3 rounded-full border-2 border-plot-accent hover:bg-plot-accent cursor-default [&.connectingto.valid]:bg-plot-accent ${
           isConnected(side)
             ? "bg-plot-accent opacity-100"
