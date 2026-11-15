@@ -20,6 +20,29 @@
         "src": "/image-sample-1.png",
         "alt": "Dimensioned drawing of a bracket with two circular holes and a curved slot"
       }
+    },
+    {
+      "id": "8d93438c-82a6-4e22-94df-f9bbc05cf1dd",
+      "type": "model",
+      "position": { "x": 220, "y": 180 },
+      "data": {
+        "label": "Gear assembly",
+        "subtitle": "GR-04 · Rev B",
+        "src": "/gear.glb",
+        "poster": "/gear-preview.jpg",
+        "alt": "A gear"
+      }
+    },
+    {
+      "id": "1j8sh2kd-82a6-4e22-94df-f9bbc05cf1dd",
+      "type": "model",
+      "position": { "x": 620, "y": 380 },
+      "data": {
+        "label": "Mounting Bracket",
+        "subtitle": "Mo-Br-01 · Rev C",
+        "src": "/mounting-bracket.glb",
+        "alt": "A mounting bracket"
+      }
     }
   ],
   "edges": []

@@ -47,13 +47,13 @@ export default function BoardCard({
         : "pointer-events-none opacity-0";
 
   return (
-    <div className="group relative">
+    <div className="group relative h-full w-full">
       {generateCardHandles(handleVisibility, isConnected)}
-      <NodeResizer isVisible={selected || nearby} />
+      <NodeResizer isVisible={selected || nearby} minWidth={220} minHeight={150} />
       <article
-        className={`cursor-default rounded-2xl border ${selected ? "border-plot-accent" : "border-plot-border"} bg-plot-surface p-4 text-plot-text shadow active:cursor-grabbing`}
+        className={`flex h-full w-full cursor-default flex-col rounded-2xl border ${selected ? "border-plot-accent" : "border-plot-border"} bg-plot-surface p-4 text-plot-text shadow active:cursor-grabbing`}
       >
-        <header className="flex items-center justify-between gap-3">
+        <header className="flex shrink-0 items-center justify-between gap-3">
           <div>
             <h2 className="text-sm font-semibold">{title}</h2>
             {subtitle && (
@@ -66,7 +66,7 @@ export default function BoardCard({
             </span>
           )}
         </header>
-        <div className="mt-3">{children}</div>
+        <div className="mt-3 min-h-0 flex-1">{children}</div>
       </article>
     </div>
   );

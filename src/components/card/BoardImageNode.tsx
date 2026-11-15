@@ -17,7 +17,7 @@ export default function BoardImageNode({
         src={data.src}
         alt={data.alt}
         draggable={false}
-        className="block h-auto w-auto max-h-72 max-w-80 rounded-xl object-contain"
+        className="block h-full w-full rounded-xl object-contain"
       />
     </BoardCard>
   );

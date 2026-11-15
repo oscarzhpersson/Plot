@@ -14,11 +14,13 @@ import BoardMap from "./BoardMap";
 import { loadBoard, saveBoard } from "@/data/boardStorage";
 import BoardNoteNode from "@/components/card/BoardNoteNode";
 import BoardImageNode from "@/components/card/BoardImageNode";
+import BoardModelNode from "@/components/card/BoardModelNode";
 import type { BoardNode } from "@/data/boardSchema";
 
 const nodeTypes = {
   note: BoardNoteNode,
   image: BoardImageNode,
+  model: BoardModelNode,
 };
 
 export default function Board() {
@@ -33,7 +35,7 @@ export default function Board() {
   };
 
   useEffect(() => {
-    if (nodes.some((node) => node.dragging)) return;
+    if (nodes.some((node) => node.dragging || node.resizing)) return;
 
     saveBoard({ nodes, edges });
   }, [nodes, edges]);

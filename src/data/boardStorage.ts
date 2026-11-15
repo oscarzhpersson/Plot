@@ -1,5 +1,5 @@
 import seed from "./board.json";
-import { boardSchema, type BoardSnapshot } from "./boardSchema";
+import { boardSchema, type BoardSnapshot, type BoardSnapshotInput } from "./boardSchema";
 
 const storageKey = "plot.board.v1";
 const seedBoard = boardSchema.parse(seed);
@@ -19,7 +19,7 @@ export function loadBoard(): BoardSnapshot {
   return seedBoard;
 }
 
-export function saveBoard(board: BoardSnapshot) {
+export function saveBoard(board: BoardSnapshotInput) {
   try {
     const snapshot = boardSchema.parse(board);
     localStorage.setItem(storageKey, JSON.stringify(snapshot));
