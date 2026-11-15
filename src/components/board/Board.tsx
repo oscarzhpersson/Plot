@@ -43,10 +43,12 @@ export default function Board() {
         panOnScrollSpeed={1}
         zoomOnScroll={false}
         zoomOnPinch
+        maxZoom={3} // TODO: Break out to global settings value?
         proOptions={{ hideAttribution: true }}
       >
         <Background gap={20} size={1} />
         <MiniMap />
+        <BoardToolbar />
       </ReactFlow>
     </div>
   );
