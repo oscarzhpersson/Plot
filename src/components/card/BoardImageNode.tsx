@@ -9,7 +9,7 @@ export default function BoardImageNode({ data }: NodeProps<ImageNode>) {
         src={data.src}
         alt={data.alt}
         draggable={false}
-        className="block aspect-2/1 w-72 rounded-xl bg-plot-surface-muted object-contain p-3"
+        className="block h-auto w-auto max-h-72 max-w-80 rounded-xl object-contain"
       />
     </BoardCard>
   );
