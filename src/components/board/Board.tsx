@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import BoardToolbar from "./BoardToolbar";
 import {
   ReactFlow,
@@ -6,23 +6,33 @@ import {
   Background,
   useEdgesState,
   useNodesState,
-  type Edge,
-  type Node,
   type OnConnect,
 } from "@xyflow/react";
 import BoardMap from "./BoardMap";
+import BoardNoteNode, { type NoteNode } from "@/components/card/BoardNoteNode";
+import { loadBoard, saveBoard } from "@/data/boardStorage";
 
-type BoardNode = Node<{ label: string }>;
-
-const initialNodes: BoardNode[] = [
-  { id: "n1", position: { x: 0, y: 0 }, data: { label: "Node 1" } },
-  { id: "n2", position: { x: 0, y: 100 }, data: { label: "Node 2" } },
-];
-const initialEdges: Edge[] = [{ id: "n1-n2", source: "n1", target: "n2" }];
+const nodeTypes = { note: BoardNoteNode };
 
 export default function Board() {
-  const [nodes, , onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [initialBoard] = useState(loadBoard);
+
+  const [nodes, , onNodesChange] = useNodesState<NoteNode>(initialBoard.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialBoard.edges);
+
+  useEffect(() => {
+    if (nodes.some((node) => node.dragging)) return;
+
+    saveBoard({
+      nodes: nodes.map(({ id, type, position, data }) => ({
+        id,
+        type,
+        position,
+        data,
+      })),
+      edges,
+    });
+  }, [nodes, edges]);
 
   const onConnect = useCallback<OnConnect>(
     (connection) =>
@@ -45,6 +55,7 @@ export default function Board() {
         zoomOnPinch
         maxZoom={3} // TODO: Break out to global settings value?
         proOptions={{ hideAttribution: true }}
+        nodeTypes={nodeTypes}
       >
         <Background gap={20} size={1} />
         <BoardMap />

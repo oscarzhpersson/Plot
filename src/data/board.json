@@ -1,0 +1,15 @@
+{
+  "nodes": [
+    {
+      "id": "2b53a922-f61f-43a8-a7cf-6bb3bc90d916",
+      "type": "note",
+      "position": { "x": 220, "y": 0 },
+      "data": {
+        "label": "Assembly notes",
+        "subtitle": "Rev B checks",
+        "text": "Check the mounting clearance."
+      }
+    }
+  ],
+  "edges": []
+}
