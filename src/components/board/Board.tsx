@@ -8,8 +8,8 @@ import {
 } from "@xyflow/react";
 import { boardFitOptions } from "./boardViewport";
 import { useBoardGraph } from "@/hooks/useBoardGraph";
-import BoardCommentOverlay, { type BoardComment } from "../comments/BoardCommentOverlay";
-import { currentUser } from "@/data/currentUser";
+import BoardCommentOverlay from "../comments/BoardCommentOverlay";
+import { useBoardComments } from "@/hooks/useBoardComments";
 import BoardNoteNode from "@/components/card/BoardNoteNode";
 import BoardImageNode from "@/components/card/BoardImageNode";
 import BoardModelNode from "@/components/card/BoardModelNode";
@@ -29,7 +29,7 @@ const nodeTypes = {
 export default function Board() {
   const [tool, setTool] = useState<BoardTool>("pan");
   const [draftPosition, setDraftPosition] = useState<XYPosition | null>(null);
-  const [comments, setComments] = useState<BoardComment[]>([]);
+  const { threads, createThread } = useBoardComments();
 
   const flow = useRef<Pick<
     ReactFlowInstance<BoardNode>,
@@ -48,17 +48,9 @@ export default function Board() {
   }
 
   function postComment(body: string) {
-    const text = body.trim();
-    if (!draftPosition || !text) return;
-
-    const comment = {
-      id: crypto.randomUUID(),
-      position: draftPosition,
-      body: text,
-      author: currentUser,
-    };
-    setComments((current) => [...current, comment]);
-    setDraftPosition(null);
+    if (draftPosition && createThread(draftPosition, body)) {
+      setDraftPosition(null);
+    }
   }
 
   const graph = useBoardGraph();
@@ -96,7 +88,7 @@ export default function Board() {
         <BoardMap />
         <BoardToolbar tool={tool} setTool={setTool} />
         <BoardCommentOverlay
-          comments={comments}
+          threads={threads}
           draftPosition={draftPosition}
           onPost={postComment}
           onDismiss={() => setDraftPosition(null)}
