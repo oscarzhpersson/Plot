@@ -3,47 +3,155 @@
     {
       "id": "2b53a922-f61f-43a8-a7cf-6bb3bc90d916",
       "type": "note",
-      "position": { "x": 220, "y": 0 },
+      "position": { "x": 0, "y": 372 },
       "data": {
         "label": "Assembly notes",
         "subtitle": "Rev B checks",
-        "text": "Check the mounting clearance."
-      }
+        "text": "Review the keyway chamfer and verify the mounting hole dimensions against the drawing before releasing Rev B."
+      },
+      "width": 400
     },
     {
       "id": "3b894661-8c17-4ee8-8d62-72feb92fcc1a",
       "type": "image",
-      "position": { "x": 620, "y": 0 },
+      "position": { "x": 490, "y": 350 },
       "data": {
         "label": "Mounting drawing",
         "subtitle": "Top view · mm",
         "src": "/image-sample-1.png",
         "alt": "Dimensioned drawing of a bracket with two circular holes and a curved slot"
-      }
+      },
+      "width": 360,
+      "height": 296
     },
     {
       "id": "8d93438c-82a6-4e22-94df-f9bbc05cf1dd",
       "type": "model",
-      "position": { "x": 220, "y": 180 },
+      "position": { "x": 0, "y": 0 },
       "data": {
         "label": "Gear assembly",
         "subtitle": "GR-04 · Rev B",
         "src": "/gear-assembly.glb",
         "poster": "/gear-assembly-preview.png",
         "alt": "A gear"
-      }
+      },
+      "width": 400,
+      "height": 294
     },
     {
       "id": "1j8sh2kd-82a6-4e22-94df-f9bbc05cf1dd",
       "type": "model",
-      "position": { "x": 620, "y": 380 },
+      "position": { "x": 490, "y": 14 },
       "data": {
         "label": "Mounting Bracket",
         "subtitle": "Mo-Br-01 · Rev C",
         "src": "/mounting-bracket.glb",
         "alt": "A mounting bracket"
-      }
+      },
+      "width": 360,
+      "height": 264
     }
   ],
-  "edges": []
+  "edges": [
+    {
+      "id": "2fcdadd0-d27c-5dc8-9e82-4ed99ceb6682",
+      "source": "8d93438c-82a6-4e22-94df-f9bbc05cf1dd",
+      "sourceHandle": "right",
+      "target": "1j8sh2kd-82a6-4e22-94df-f9bbc05cf1dd",
+      "targetHandle": "left"
+    },
+    {
+      "id": "b222fa87-019c-581c-a749-10ad2f801655",
+      "source": "1j8sh2kd-82a6-4e22-94df-f9bbc05cf1dd",
+      "sourceHandle": "bottom",
+      "target": "3b894661-8c17-4ee8-8d62-72feb92fcc1a",
+      "targetHandle": "top"
+    }
+  ],
+  "threads": [
+    {
+      "id": "c1416a83-8e52-5f52-be1a-a59f3f48b6b9",
+      "position": { "x": 258, "y": 166 },
+      "status": "open",
+      "messages": [
+        {
+          "id": "3345cc4f-b07a-5afa-8945-705cfec13723",
+          "author": {
+            "name": "Maya Lind",
+            "initials": "ML"
+          },
+          "body": "Can we chamfer the keyway entrance? It would make the gear easier to align on the shaft.",
+          "createdAt": "2026-11-16T09:42:00.000Z"
+        },
+        {
+          "id": "bc2fa143-c5c4-5378-917c-6fa20e68e1ba",
+          "author": {
+            "name": "Oscar Persson",
+            "initials": "OP"
+          },
+          "body": "I’ll check the available space against the shaft drawing.",
+          "createdAt": "2026-11-16T10:08:00.000Z"
+        },
+        {
+          "id": "71b0c970-8eaf-5d87-be7c-08a6195535f5",
+          "author": {
+            "name": "Jules Rivera",
+            "initials": "JR"
+          },
+          "body": "Please also check whether the existing deburring operation can do it.",
+          "createdAt": "2026-11-16T10:14:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "e6809617-a07b-50cc-9e8f-3c7672f444d6",
+      "position": { "x": 730, "y": 472 },
+      "status": "open",
+      "messages": [
+        {
+          "id": "d61aa554-0cbe-5f8d-9b58-508eb0a5dac3",
+          "author": {
+            "name": "Oscar Persson",
+            "initials": "OP"
+          },
+          "body": "Confirm the mounting hole diameter before this drawing goes out for review.",
+          "createdAt": "2026-11-16T10:25:00.000Z"
+        },
+        {
+          "id": "c7ebbc67-5219-5305-a34b-76c752c02816",
+          "author": {
+            "name": "Maya Lind",
+            "initials": "ML"
+          },
+          "body": "I’ll verify it against the bracket model and update the drawing if needed.",
+          "createdAt": "2026-11-16T10:34:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "af01b876-1cb2-5913-b2e1-874c1a049bda",
+      "position": { "x": 750, "y": 203 },
+      "status": "resolved",
+      "messages": [
+        {
+          "id": "b65ffa21-f155-58d9-9cdd-47659783e001",
+          "author": {
+            "name": "Jules Rivera",
+            "initials": "JR"
+          },
+          "body": "Does the lower mounting hole leave enough room for the fastener head?",
+          "createdAt": "2026-11-16T08:55:00.000Z"
+        },
+        {
+          "id": "10f54249-c025-5be6-b189-dd5261b0ae44",
+          "author": {
+            "name": "Oscar Persson",
+            "initials": "OP"
+          },
+          "body": "Checked the bracket with the planned fastener. The head clears the flange.",
+          "createdAt": "2026-11-16T09:12:00.000Z"
+        }
+      ]
+    }
+  ]
 }

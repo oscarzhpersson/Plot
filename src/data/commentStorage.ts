@@ -1,4 +1,5 @@
 import { z } from "zod";
+import starterBoard from "./board.json";
 
 const storageKey = "plot.comments.v1";
 
@@ -20,13 +21,14 @@ const threadSchema = z.object({
 });
 
 const threadsSchema = z.array(threadSchema);
+const starterThreads = threadsSchema.parse(starterBoard.threads);
 
 export type CommentThread = z.infer<typeof threadSchema>;
 
 export function loadCommentThreads(): CommentThread[] {
   try {
     const saved = localStorage.getItem(storageKey);
-    return saved === null ? [] : threadsSchema.parse(JSON.parse(saved));
+    return saved === null ? starterThreads : threadsSchema.parse(JSON.parse(saved));
   } catch (error) {
     console.warn("Could not load the saved comment threads.", error);
     return [];
