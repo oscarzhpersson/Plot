@@ -169,6 +169,17 @@ body {
     @apply grid size-8 shrink-0 origin-bottom-left place-items-center rounded-[11px] rounded-bl-[3px] border-2;
   }
 
+  .plot-comment-actions {
+    @apply motion-safe:transition-opacity motion-safe:duration-(--plot-motion-feedback) motion-safe:ease-(--plot-motion-ease-feedback);
+  }
+
+  @media (hover: hover) {
+    .plot-comment-message:not(:hover, :focus-within) .plot-comment-actions {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     .plot-comment-pin {
       animation: plot-comment-pin-enter var(--plot-motion-enter)

@@ -94,11 +94,9 @@ export default function CommentThreadDetail({
         {thread.messages.map(({ id, author, body, createdAt }, index) => (
           <li
             key={id}
-            className={
-              index > 0
-                ? "plot-comment-message-enter ml-3 rounded-lg bg-plot-surface-muted p-2.5"
-                : undefined
-            }
+            className={`plot-comment-message rounded-lg p-2.5 hover:bg-plot-toolbar-hover motion-safe:transition-colors
+                        motion-safe:duration-(--plot-motion-feedback) motion-safe:ease-(--plot-motion-ease-feedback)
+                        ${index > 0 ? "plot-comment-message-enter ml-3 bg-plot-surface-muted" : ""}`}
           >
             <div className="flex items-center gap-2.5">
               <span
@@ -107,7 +105,7 @@ export default function CommentThreadDetail({
               >
                 {author.initials}
               </span>
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="wrap-anywhere text-sm font-semibold">
                   {author.name}
                 </p>
@@ -118,6 +116,32 @@ export default function CommentThreadDetail({
                   {timestamp.format(new Date(createdAt))}
                 </time>
               </div>
+              {editingId !== id && (
+                <div className="plot-comment-actions flex shrink-0 items-center gap-1 empty:hidden">
+                  {isCurrentUser(author) && (
+                    <button
+                      type="button"
+                      aria-label={index === 0 ? "Edit comment" : "Edit reply"}
+                      title="Edit"
+                      onClick={() => setEditingId(id)}
+                      className="plot-toolbar-button grid size-7 place-items-center"
+                    >
+                      <Pencil size={14} aria-hidden="true" />
+                    </button>
+                  )}
+                  {index === 0 && (
+                    <button
+                      type="button"
+                      aria-label="Reply to thread"
+                      title="Reply"
+                      onClick={() => replyInput.current?.focus()}
+                      className="plot-toolbar-button grid size-7 place-items-center"
+                    >
+                      <Reply size={14} aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
             {editingId === id ? (
               <MessageForm
@@ -132,34 +156,9 @@ export default function CommentThreadDetail({
                 }}
               />
             ) : (
-              <>
-                <p className="mt-2 wrap-anywhere text-sm whitespace-pre-wrap">
-                  {body}
-                </p>
-                <div className="mt-2 flex items-center gap-1 empty:hidden">
-                  {isCurrentUser(author) && (
-                    <button
-                      type="button"
-                      aria-label={index === 0 ? "Edit comment" : "Edit reply"}
-                      onClick={() => setEditingId(id)}
-                      className="plot-toolbar-button inline-flex items-center gap-1.5 px-2 py-1.5 text-xs font-semibold"
-                    >
-                      <Pencil size={14} aria-hidden="true" />
-                      Edit
-                    </button>
-                  )}
-                  {index === 0 && (
-                    <button
-                      type="button"
-                      onClick={() => replyInput.current?.focus()}
-                      className="plot-toolbar-button inline-flex items-center gap-1.5 px-2 py-1.5 text-xs font-semibold"
-                    >
-                      <Reply size={14} aria-hidden="true" />
-                      Reply
-                    </button>
-                  )}
-                </div>
-              </>
+              <p className="mt-2 wrap-anywhere text-sm whitespace-pre-wrap">
+                {body}
+              </p>
             )}
           </li>
         ))}
