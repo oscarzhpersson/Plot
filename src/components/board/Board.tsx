@@ -9,7 +9,6 @@ import {
 import { boardFitOptions } from "./boardViewport";
 import { useBoardGraph } from "@/hooks/useBoardGraph";
 import BoardCommentOverlay from "../comments/BoardCommentOverlay";
-import { useBoardComments } from "@/hooks/useBoardComments";
 import BoardNoteNode from "@/components/card/BoardNoteNode";
 import BoardImageNode from "@/components/card/BoardImageNode";
 import BoardModelNode from "@/components/card/BoardModelNode";
@@ -18,6 +17,7 @@ import BoardMap from "./BoardMap";
 
 import type { BoardTool } from "./boardTypes";
 import type { BoardNode } from "@/data/boardSchema";
+import type { CommentThread } from "@/data/commentStorage";
 import type { ReactFlowInstance, XYPosition } from "@xyflow/react";
 
 const nodeTypes = {
@@ -26,10 +26,21 @@ const nodeTypes = {
   model: BoardModelNode,
 };
 
-export default function Board() {
+type BoardProps = {
+  threads: CommentThread[];
+  activeThreadId: string | null;
+  onCreateThread: (position: XYPosition, body: string) => boolean;
+  onSelectThread: (id: string) => void;
+};
+
+export default function Board({
+  threads,
+  activeThreadId,
+  onCreateThread,
+  onSelectThread,
+}: BoardProps) {
   const [tool, setTool] = useState<BoardTool>("pan");
   const [draftPosition, setDraftPosition] = useState<XYPosition | null>(null);
-  const { threads, createThread } = useBoardComments();
 
   const flow = useRef<Pick<
     ReactFlowInstance<BoardNode>,
@@ -48,7 +59,7 @@ export default function Board() {
   }
 
   function postComment(body: string) {
-    if (draftPosition && createThread(draftPosition, body)) {
+    if (draftPosition && onCreateThread(draftPosition, body)) {
       setDraftPosition(null);
     }
   }
@@ -89,7 +100,9 @@ export default function Board() {
         <BoardToolbar tool={tool} setTool={setTool} />
         <BoardCommentOverlay
           threads={threads}
+          activeThreadId={activeThreadId}
           draftPosition={draftPosition}
+          onSelectThread={onSelectThread}
           onPost={postComment}
           onDismiss={() => setDraftPosition(null)}
         />

@@ -1,9 +1,23 @@
+import type { Ref } from "react";
 import { Box, ChevronRight, MessageCircle } from "lucide-react";
 import { currentUser } from "@/data/currentUser";
 
-export default function BoardHeader() {
+type BoardHeaderProps = {
+  commentsOpen: boolean;
+  commentsButtonRef: Ref<HTMLButtonElement>;
+  onToggleComments: () => void;
+};
+
+export default function BoardHeader({
+  commentsOpen,
+  commentsButtonRef,
+  onToggleComments,
+}: BoardHeaderProps) {
   return (
-    <header className="z-10 flex h-17 shrink-0 items-center justify-between gap-3 border-b border-plot-border bg-plot-surface px-3 text-plot-text sm:px-6">
+    <header
+      className="z-10 flex h-17 shrink-0 items-center justify-between gap-3 border-b
+                      border-plot-border bg-plot-surface px-3 text-plot-text sm:px-6"
+    >
       <div className="flex min-w-0 items-center gap-2 sm:gap-4">
         <div className="flex shrink-0 items-center gap-2">
           <span className="grid size-8 place-items-center rounded-xl bg-plot-accent text-plot-accent-foreground">
@@ -26,9 +40,13 @@ export default function BoardHeader() {
       <div className="flex shrink-0 items-center gap-2 sm:gap-3">
         <button
           type="button"
-          disabled
+          ref={commentsButtonRef}
           aria-label="Comments"
-          className="inline-flex h-9 cursor-not-allowed items-center gap-2 rounded-xl bg-plot-surface-muted px-2.5 text-sm font-semibold sm:px-3.5"
+          aria-expanded={commentsOpen}
+          aria-controls="comments-sidebar"
+          onClick={onToggleComments}
+          className="plot-toolbar-button inline-flex h-9 items-center gap-2 bg-plot-surface-muted px-2.5
+          text-sm font-semibold aria-expanded:bg-plot-accent-soft aria-expanded:text-plot-accent-soft-foreground sm:px-3.5"
         >
           <MessageCircle size={15} strokeWidth={1.75} aria-hidden="true" />
           <span className="hidden sm:inline">Comments</span>

@@ -10,6 +10,9 @@ import { currentUser } from "@/data/currentUser";
 
 export function useBoardComments() {
   const [threads, setThreads] = useState(loadCommentThreads);
+  const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
+  const [commentsOpen, setCommentsOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<CommentThread["status"]>("open");
   const savedThreads = useRef(threads);
 
   useEffect(() => {
@@ -40,5 +43,47 @@ export function useBoardComments() {
     return true;
   }
 
-  return { threads, createThread };
+  function openSidebar() {
+    setCommentsOpen(true);
+  }
+
+  function closeSidebar() {
+    setCommentsOpen(false);
+  }
+
+  function openThread(id: string) {
+    const thread = threads.find((candidate) => candidate.id === id);
+    if (!thread) return;
+
+    setStatusFilter(thread.status);
+    setActiveThreadId(thread.id);
+    openSidebar();
+  }
+
+  function toggleThread(id: string) {
+    if (commentsOpen && activeThreadId === id) {
+      closeSidebar();
+      return;
+    }
+
+    openThread(id);
+  }
+
+  function selectStatusFilter(status: CommentThread["status"]) {
+    setStatusFilter(status);
+    setActiveThreadId(null);
+  }
+
+  return {
+    threads,
+    createThread,
+    activeThreadId,
+    commentsOpen,
+    statusFilter,
+    openSidebar,
+    closeSidebar,
+    openThread,
+    toggleThread,
+    selectStatusFilter,
+  };
 }

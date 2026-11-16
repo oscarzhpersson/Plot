@@ -5,6 +5,8 @@ import CommentComposer from "./CommentComposer";
 
 type BoardCommentOverlayProps = {
   threads: CommentThread[];
+  activeThreadId: string | null;
+  onSelectThread: (id: string) => void;
   draftPosition: XYPosition | null;
   onPost: (body: string) => void;
   onDismiss: () => void;
@@ -12,6 +14,8 @@ type BoardCommentOverlayProps = {
 
 export default function BoardCommentOverlay({
   threads,
+  activeThreadId,
+  onSelectThread,
   draftPosition,
   onPost,
   onDismiss,
@@ -31,8 +35,12 @@ export default function BoardCommentOverlay({
         const spaceLeft = anchorX / screenScale;
         const spaceRight = (width - anchorX) / screenScale - 32;
         const openLeft = spaceRight < 240 && spaceLeft > spaceRight;
-        const previewWidth = Math.min(224, Math.max(80, (openLeft ? spaceLeft : spaceRight) - 16));
-        const openUp = height - anchorY < 144 * screenScale && anchorY > height / 2;
+        const previewWidth = Math.min(
+          224,
+          Math.max(80, (openLeft ? spaceLeft : spaceRight) - 16),
+        );
+        const openUp =
+          height - anchorY < 144 * screenScale && anchorY > height / 2;
         const tooltipId = `${previewId}-${id}`;
 
         return (
@@ -41,17 +49,26 @@ export default function BoardCommentOverlay({
             className="group pointer-events-auto absolute -translate-y-full origin-bottom-left hover:z-10 focus-within:z-10"
             style={{ left: position.x, top: position.y, scale }}
           >
-            <span
-              role="img"
-              tabIndex={0}
-              aria-label={`Comment by ${author.name}`}
+            <button
+              type="button"
+              aria-label={`Open comment by ${author.name}`}
               aria-describedby={tooltipId}
-              className="plot-comment-pin cursor-default border-plot-accent bg-plot-surface text-xs font-semibold text-plot-accent-soft-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-plot-focus-ring motion-safe:transition-[scale] motion-safe:duration-(--plot-motion-feedback) motion-safe:ease-(--plot-motion-ease-feedback) motion-safe:group-hover:scale-110"
+              aria-pressed={id === activeThreadId}
+              onClick={() => onSelectThread(id)}
+              className="plot-comment-pin peer nopan cursor-pointer border-plot-accent bg-plot-surface text-xs
+                        font-semibold text-plot-accent-soft-foreground aria-pressed:border-plot-surface aria-pressed:bg-plot-accent
+                        aria-pressed:text-plot-accent-foreground aria-pressed:shadow focus-visible:outline-2 focus-visible:outline-offset-2
+                        focus-visible:outline-plot-focus-ring motion-safe:transition-[scale] motion-safe:duration-(--plot-motion-feedback)
+                        motion-safe:ease-(--plot-motion-ease-feedback) motion-safe:group-hover:scale-110"
             >
               {author.initials}
-            </span>
+            </button>
             <div
-              className={`invisible absolute opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 motion-safe:scale-[.97] motion-safe:transition-[visibility,opacity,scale] motion-safe:duration-(--plot-motion-enter) motion-safe:ease-(--plot-motion-ease-enter) motion-safe:group-hover:scale-100 motion-safe:group-focus-within:scale-100 ${openLeft ? "right-full origin-right pr-2" : "left-full origin-left pl-2"} ${openUp ? "bottom-0" : "top-0"}`}
+              className={`invisible absolute opacity-0 group-hover:visible group-hover:opacity-100 peer-focus-visible:visible
+                          peer-focus-visible:opacity-100 motion-safe:scale-[.97] motion-safe:transition-[visibility,opacity,scale]
+                          motion-safe:duration-(--plot-motion-enter) motion-safe:ease-(--plot-motion-ease-enter)
+                          motion-safe:group-hover:scale-100 motion-safe:peer-focus-visible:scale-100
+                          ${openLeft ? "right-full origin-right pr-2" : "left-full origin-left pl-2"} ${openUp ? "bottom-0" : "top-0"}`}
             >
               <div
                 id={tooltipId}
@@ -59,7 +76,9 @@ export default function BoardCommentOverlay({
                 className="nopan nowheel rounded-xl border border-plot-border bg-plot-surface p-3 text-sm text-plot-text shadow"
                 style={{ width: previewWidth }}
               >
-                <div className="mb-1 wrap-anywhere font-semibold">{author.name}</div>
+                <div className="mb-1 wrap-anywhere font-semibold">
+                  {author.name}
+                </div>
                 <p className="max-h-32 overflow-y-auto overscroll-contain wrap-anywhere whitespace-pre-wrap">
                   {body}
                 </p>
