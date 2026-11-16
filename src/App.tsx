@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Board from "@/components/board/Board";
 import BoardHeader from "@/components/board/BoardHeader";
 import CommentsPanel from "@/components/comments/CommentsPanel";
@@ -19,6 +19,7 @@ function App() {
     selectStatusFilter,
   } = useBoardComments();
   const commentsButtonRef = useRef<HTMLButtonElement>(null);
+  const [toolbarHost, setToolbarHost] = useState<HTMLDivElement | null>(null);
 
   function closeComments() {
     closeSidebar();
@@ -40,8 +41,13 @@ function App() {
               activeThreadId={commentsOpen ? activeThreadId : null}
               onCreateThread={createThread}
               onSelectThread={toggleThread}
+              toolbarHost={toolbarHost}
             />
           </main>
+          <div
+            ref={setToolbarHost}
+            className="pointer-events-none absolute inset-0 z-10"
+          />
           <CommentsPanel open={commentsOpen}>
             <CommentsSidebar
               open={commentsOpen}

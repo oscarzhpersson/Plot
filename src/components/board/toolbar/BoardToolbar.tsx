@@ -13,7 +13,8 @@ export default function BoardToolbar({ tool, setTool }: BoardToolbarProps) {
   return (
     <Panel
       position="bottom-center"
-      className="flex items-center gap-0.75 rounded-xl border border-plot-border bg-plot-surface text-plot-text p-1.25 shadow select-none"
+      className="pointer-events-auto flex items-center gap-0.75 rounded-xl border border-plot-border bg-plot-surface
+                  text-plot-text p-1.25 shadow select-none"
     >
       <BoardActionControls current={tool} onToolChange={setTool} />
       <span

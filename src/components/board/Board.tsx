@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import BoardToolbar from "./toolbar/BoardToolbar";
 import {
   ReactFlow,
@@ -31,6 +32,7 @@ type BoardProps = {
   activeThreadId: string | null;
   onCreateThread: (position: XYPosition, body: string) => boolean;
   onSelectThread: (id: string) => void;
+  toolbarHost?: HTMLDivElement | null;
 };
 
 export default function Board({
@@ -38,6 +40,7 @@ export default function Board({
   activeThreadId,
   onCreateThread,
   onSelectThread,
+  toolbarHost,
 }: BoardProps) {
   const [tool, setTool] = useState<BoardTool>("pan");
   const [draftPosition, setDraftPosition] = useState<XYPosition | null>(null);
@@ -66,6 +69,7 @@ export default function Board({
 
   const graph = useBoardGraph();
   const isPanMode = tool === "pan";
+  const toolbar = <BoardToolbar tool={tool} setTool={setTool} />;
 
   return (
     <div className="h-full w-full">
@@ -97,7 +101,7 @@ export default function Board({
       >
         <Background gap={20} size={1} />
         <BoardMap />
-        <BoardToolbar tool={tool} setTool={setTool} />
+        {toolbarHost ? createPortal(toolbar, toolbarHost) : toolbar}
         <BoardCommentOverlay
           threads={threads}
           activeThreadId={activeThreadId}
