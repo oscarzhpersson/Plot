@@ -6,7 +6,18 @@ import {
   saveCommentThreads,
   type CommentThread,
 } from "@/data/commentStorage";
-import { currentUser } from "@/data/currentUser";
+import { currentUser, isCurrentUser } from "@/data/currentUser";
+
+type CommentMessage = CommentThread["messages"][number];
+
+function createMessage(body: string): CommentMessage {
+  return {
+    id: crypto.randomUUID(),
+    author: currentUser,
+    body,
+    createdAt: new Date().toISOString(),
+  };
+}
 
 export function useBoardComments() {
   const [threads, setThreads] = useState(loadCommentThreads);
@@ -29,24 +40,48 @@ export function useBoardComments() {
       id: crypto.randomUUID(),
       position,
       status: "open",
-      messages: [
-        {
-          id: crypto.randomUUID(),
-          author: currentUser,
-          body: text,
-          createdAt: new Date().toISOString(),
-        },
-      ],
+      messages: [createMessage(text)],
     };
 
     setThreads((current) => [...current, thread]);
     return true;
   }
 
-  function moveThread(id: string, position: XYPosition) {
+  function updateThread(id: string, update: (thread: CommentThread) => CommentThread) {
     setThreads((current) => current.map((thread) =>
-      thread.id === id ? { ...thread, position } : thread,
+      thread.id === id ? update(thread) : thread,
     ));
+  }
+
+  function moveThread(id: string, position: XYPosition) {
+    updateThread(id, (thread) => ({ ...thread, position }));
+  }
+
+  function replyToThread(id: string, body: string): boolean {
+    const text = body.trim();
+    if (!text || !threads.some((thread) => thread.id === id)) return false;
+
+    const message = createMessage(text);
+    updateThread(id, (thread) => ({ ...thread, messages: [...thread.messages, message] }));
+    return true;
+  }
+
+  function editMessage(threadId: string, messageId: string, body: string): boolean {
+    const text = body.trim();
+    if (!text) return false;
+
+    const message = threads.find(({ id }) => id === threadId)?.messages.find(({ id }) => id === messageId);
+    if (!message || !isCurrentUser(message.author)) return false;
+    if (message.body === text) return true;
+
+    const replaceBody = (message: CommentMessage) =>
+      message.id === messageId ? { ...message, body: text } : message;
+
+    updateThread(threadId, (thread) => {
+      const [first, ...replies] = thread.messages;
+      return { ...thread, messages: [replaceBody(first), ...replies.map(replaceBody)] };
+    });
+    return true;
   }
 
   function openSidebar() {
@@ -85,6 +120,8 @@ export function useBoardComments() {
     threads,
     createThread,
     moveThread,
+    replyToThread,
+    editMessage,
     activeThreadId,
     commentsOpen,
     statusFilter,

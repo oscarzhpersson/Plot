@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { ChevronRight, X } from "lucide-react";
 import type { CommentThread } from "@/data/commentStorage";
+import CommentThreadDetail from "./CommentThreadDetail";
 
 type CommentsSidebarProps = {
   open: boolean;
@@ -9,6 +10,8 @@ type CommentsSidebarProps = {
   status: CommentThread["status"];
   onChangeStatus: (status: CommentThread["status"]) => void;
   onSelectThread: (id: string) => void;
+  onReply: (threadId: string, body: string) => boolean;
+  onEdit: (threadId: string, messageId: string, body: string) => boolean;
   onClose: () => void;
 };
 
@@ -17,11 +20,6 @@ const threadFilters = [
   { status: "resolved", label: "Resolved" },
 ] as const;
 
-const timestamp = new Intl.DateTimeFormat(undefined, {
-  dateStyle: "medium",
-  timeStyle: "short",
-});
-
 export default function CommentsSidebar({
   open,
   threads,
@@ -29,6 +27,8 @@ export default function CommentsSidebar({
   status,
   onChangeStatus,
   onSelectThread,
+  onReply,
+  onEdit,
   onClose,
 }: CommentsSidebarProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -136,49 +136,12 @@ export default function CommentsSidebar({
       )}
 
       {activeThread ? (
-        <section
-          aria-label="Selected thread"
-          className="mx-4 min-h-0 flex-1 overflow-y-auto border-t border-plot-border pt-3 pb-4"
-        >
-          <h3 className="mb-3 text-base font-semibold">Thread</h3>
-          <ol className="space-y-4">
-            {activeThread.messages.map(
-              ({ id, author, body, createdAt }, index) => (
-                <li
-                  key={id}
-                  className={
-                    index > 0
-                      ? "ml-3 rounded-lg bg-plot-surface-muted p-2.5"
-                      : undefined
-                  }
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span
-                      aria-hidden="true"
-                      className="grid size-8 shrink-0 place-items-center rounded-lg bg-plot-accent-soft text-xs font-semibold text-plot-accent-soft-foreground"
-                    >
-                      {author.initials}
-                    </span>
-                    <div className="min-w-0">
-                      <p className="wrap-anywhere text-sm font-semibold">
-                        {author.name}
-                      </p>
-                      <time
-                        dateTime={createdAt}
-                        className="text-xs text-plot-text-muted"
-                      >
-                        {timestamp.format(new Date(createdAt))}
-                      </time>
-                    </div>
-                  </div>
-                  <p className="mt-2 wrap-anywhere text-sm whitespace-pre-wrap">
-                    {body}
-                  </p>
-                </li>
-              ),
-            )}
-          </ol>
-        </section>
+        <CommentThreadDetail
+          key={activeThread.id}
+          thread={activeThread}
+          onReply={onReply}
+          onEdit={onEdit}
+        />
       ) : visibleThreads.length > 0 ? (
         <p className="mx-4 border-t border-plot-border py-3 text-sm text-plot-text-muted">
           Select a thread to read it.

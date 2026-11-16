@@ -10,6 +10,8 @@ function App() {
     threads,
     createThread,
     moveThread,
+    replyToThread,
+    editMessage,
     activeThreadId,
     commentsOpen,
     statusFilter,
@@ -65,6 +67,8 @@ function App() {
               status={statusFilter}
               onChangeStatus={selectStatusFilter}
               onSelectThread={focusThread}
+              onReply={replyToThread}
+              onEdit={editMessage}
               onClose={closeComments}
             />
           </CommentsPanel>
