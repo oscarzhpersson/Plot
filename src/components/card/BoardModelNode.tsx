@@ -208,9 +208,7 @@ function ModelCardPreview({
   const [hasOpened, setHasOpened] = useState(selected);
   const [hasRendered, setHasRendered] = useState(false);
   const [generatedPoster, setGeneratedPoster] = useState(() => loadModelPoster(src));
-  const [initialPoster] = useState(
-    () => generatedPoster ?? suppliedPoster ?? (src === "/gear.glb" ? "/gear-preview.jpg" : undefined),
-  );
+  const [initialPoster] = useState(() => generatedPoster ?? suppliedPoster);
   if (selected && !hasOpened) setHasOpened(true);
 
   const onPosterReady = useCallback((image: string) => {

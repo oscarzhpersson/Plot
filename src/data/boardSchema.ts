@@ -1,6 +1,9 @@
 import type { Node } from "@xyflow/react";
 import { z } from "zod";
 
+const gearModelSrc = "/gear-assembly.glb";
+const gearPosterSrc = "/gear-assembly-preview.png";
+
 const card = z.object({
   id: z.string().min(1),
   width: z.number().positive().optional(),
@@ -28,10 +31,23 @@ const nodeSchema = z.discriminatedUnion("type", [
     type: z.literal("model"),
     width: z.number().positive().default(354),
     height: z.number().positive().default(278),
-    data: cardData.extend({
-      src: z.string().min(1).default("/gear.glb"),
-      poster: z.string().optional(),
-    }),
+    data: cardData
+      .extend({
+        src: z.string().min(1).default(gearModelSrc),
+        poster: z.string().optional(),
+      })
+      .transform((data) => {
+        // Upgrade saved boards that point to the former local-only gear.
+        if (data.src !== "/gear.glb" && data.src !== gearModelSrc) return data;
+
+        return {
+          ...data,
+          src: gearModelSrc,
+          poster: data.poster && data.poster !== "/gear-preview.jpg"
+            ? data.poster
+            : gearPosterSrc,
+        };
+      }),
   }),
 ]);
 

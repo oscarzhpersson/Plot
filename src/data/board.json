@@ -28,8 +28,8 @@
       "data": {
         "label": "Gear assembly",
         "subtitle": "GR-04 · Rev B",
-        "src": "/gear.glb",
-        "poster": "/gear-preview.jpg",
+        "src": "/gear-assembly.glb",
+        "poster": "/gear-assembly-preview.png",
         "alt": "A gear"
       }
     },
