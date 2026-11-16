@@ -136,16 +136,16 @@ export default function CommentThreadDetail({
                 </time>
               </div>
               {editingId !== id && (
-                <div className="plot-comment-actions flex shrink-0 items-center gap-1 empty:hidden">
+                <div className="flex shrink-0 items-center gap-1 empty:hidden">
                   {isCurrentUser(author) && (
                     <button
                       type="button"
                       aria-label={index === 0 ? "Edit comment" : "Edit reply"}
-                      title="Edit"
                       onClick={() => setEditingId(id)}
-                      className="plot-toolbar-button grid size-7 place-items-center"
+                      className="plot-toolbar-button inline-flex h-7 items-center gap-1 px-2 text-xs font-medium"
                     >
                       <Pencil size={14} aria-hidden="true" />
+                      Edit
                     </button>
                   )}
                   {index === 0 && (
@@ -154,7 +154,7 @@ export default function CommentThreadDetail({
                       aria-label="Reply to thread"
                       title="Reply"
                       onClick={() => replyInput.current?.focus()}
-                      className="plot-toolbar-button grid size-7 place-items-center"
+                      className="plot-comment-actions plot-toolbar-button grid size-7 place-items-center"
                     >
                       <Reply size={14} aria-hidden="true" />
                     </button>

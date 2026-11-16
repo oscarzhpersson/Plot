@@ -105,9 +105,18 @@ export default function CommentComposer({
       );
     }
 
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key !== "Escape" || event.defaultPrevented || event.isComposing) return;
+
+      event.preventDefault();
+      dismiss();
+    }
+
     document.addEventListener("click", handleOutsideClick, true);
+    document.addEventListener("keydown", handleEscape);
     return () => {
       document.removeEventListener("click", handleOutsideClick, true);
+      document.removeEventListener("keydown", handleEscape);
       window.clearTimeout(dismissTimer);
       shake?.cancel();
     };
@@ -145,10 +154,19 @@ export default function CommentComposer({
         <div
           className={
             hasBody
-              ? "plot-comment-footer col-span-2 flex justify-end border-t border-plot-border px-2.5 py-2"
+              ? "plot-comment-footer col-span-2 flex justify-end gap-2 border-t border-plot-border px-2.5 py-2"
               : "pr-2"
           }
         >
+          {hasBody && (
+            <button
+              type="button"
+              onClick={onDismiss}
+              className="plot-toolbar-button px-2.5 text-xs font-semibold text-plot-text-muted"
+            >
+              Cancel
+            </button>
+          )}
           <button
             type="submit"
             aria-label="Post comment"

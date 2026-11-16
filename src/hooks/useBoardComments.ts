@@ -44,6 +44,7 @@ export function useBoardComments() {
     };
 
     setThreads((current) => [...current, thread]);
+    showThread(thread);
     return true;
   }
 
@@ -98,13 +99,17 @@ export function useBoardComments() {
     setCommentsOpen(false);
   }
 
+  function showThread(thread: CommentThread) {
+    setStatusFilter(thread.status);
+    setActiveThreadId(thread.id);
+    openSidebar();
+  }
+
   function openThread(id: string) {
     const thread = threads.find((candidate) => candidate.id === id);
     if (!thread) return;
 
-    setStatusFilter(thread.status);
-    setActiveThreadId(thread.id);
-    openSidebar();
+    showThread(thread);
     return thread;
   }
 
