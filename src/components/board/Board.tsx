@@ -133,7 +133,7 @@ export default function Board({
         selectionKeyCode={isPanMode ? "Shift" : null}
         fitView
         fitViewOptions={boardFitOptions}
-        panOnDrag={isPanMode}
+        panOnDrag={isPanMode ? true : [1]}
         panOnScroll
         panOnScrollSpeed={1}
         zoomOnScroll={false}
