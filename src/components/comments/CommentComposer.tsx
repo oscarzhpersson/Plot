@@ -1,22 +1,73 @@
 import { ArrowUp, MessageCircle } from "lucide-react";
-import { useEffect, useEffectEvent, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState } from "react";
+import type { XYPosition } from "@xyflow/react";
+import { placeCommentComposer, type CanvasRect, type CommentViewport } from "./commentLayout";
 
 type CommentComposerProps = {
+  anchor: XYPosition;
+  viewport: CommentViewport;
+  canvasElement: HTMLDivElement | null;
+  toolbarElement: HTMLDivElement | null;
   onPost: (body: string) => void;
   onDismiss: () => void;
 };
 
 export default function CommentComposer({
+  anchor,
+  viewport,
+  canvasElement,
+  toolbarElement,
   onPost,
   onDismiss,
 }: CommentComposerProps) {
   const [text, setText] = useState("");
+  const [formHeight, setFormHeight] = useState(44);
+  const [controls, setControls] = useState<CanvasRect[]>([]);
   const composerRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const discardArmed = useRef(false);
   const body = text.trim();
   const hasBody = body.length > 0;
+
+  useLayoutEffect(() => {
+    const form = formRef.current;
+    if (!form) return;
+
+    const minimap = canvasElement?.querySelector(".react-flow__minimap");
+    const elements = [toolbarElement, minimap];
+    const measure = () => {
+      setFormHeight(form.offsetHeight);
+      if (!canvasElement) return;
+
+      const canvas = canvasElement.getBoundingClientRect();
+      setControls(elements.flatMap((element) => {
+        if (!element || getComputedStyle(element).visibility === "hidden") return [];
+        const bounds = element.getBoundingClientRect();
+        return [{
+          left: bounds.left - canvas.left,
+          right: bounds.right - canvas.left,
+          top: bounds.top - canvas.top,
+          bottom: bounds.bottom - canvas.top,
+        }];
+      }));
+    };
+
+    const observer = new ResizeObserver(measure);
+    for (const element of [form, canvasElement, ...elements]) {
+      if (element) observer.observe(element);
+    }
+
+    const minimapObserver = new MutationObserver(measure);
+    if (minimap?.parentElement) {
+      minimapObserver.observe(minimap.parentElement, { attributes: true, attributeFilter: ["class"] });
+    }
+
+    return () => {
+      observer.disconnect();
+      minimapObserver.disconnect();
+    };
+  }, [canvasElement, toolbarElement]);
 
   const dismiss = useEffectEvent(onDismiss);
   const getHasBody = useEffectEvent(() => hasBody);
@@ -63,7 +114,7 @@ export default function CommentComposer({
   }, []);
 
   return (
-    <div ref={composerRef} className="flex items-start gap-2">
+    <div ref={composerRef} className="relative size-8">
       <span
         aria-hidden="true"
         className="plot-comment-pin pointer-events-auto border-plot-surface bg-plot-accent text-plot-accent-foreground shadow"
@@ -72,7 +123,8 @@ export default function CommentComposer({
       </span>
       <form
         ref={formRef}
-        className="plot-comment-composer nodrag nopan nowheel pointer-events-auto grid w-80 grid-cols-[minmax(0,1fr)_auto] items-center rounded-2xl border border-plot-border bg-plot-surface text-plot-text shadow focus-within:border-plot-focus-ring"
+        style={placeCommentComposer(anchor, viewport, formHeight, controls)}
+        className="plot-comment-composer nodrag nopan nowheel pointer-events-auto absolute grid overflow-y-auto grid-cols-[minmax(0,1fr)_auto] items-center rounded-2xl border border-plot-border bg-plot-surface text-plot-text shadow focus-within:border-plot-focus-ring"
         onSubmit={(event) => {
           event.preventDefault();
           if (hasBody) onPost(body);

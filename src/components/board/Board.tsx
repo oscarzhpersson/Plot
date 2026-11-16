@@ -139,6 +139,7 @@ export default function Board({
           threads={visibleThreads}
           activeThreadId={activeThreadId}
           draftPosition={draftPosition}
+          toolbarElement={toolbarElement}
           onSelectThread={onSelectThread}
           onMoveThread={onMoveThread}
           onSetThreadResolved={onSetThreadResolved}

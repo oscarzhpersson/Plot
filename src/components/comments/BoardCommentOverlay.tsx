@@ -10,6 +10,7 @@ type BoardCommentOverlayProps = {
   onMoveThread: (id: string, position: XYPosition) => void;
   onSetThreadResolved: (id: string, resolved: boolean) => void;
   draftPosition: XYPosition | null;
+  toolbarElement: HTMLDivElement | null;
   onPost: (body: string) => void;
   onDismiss: () => void;
 };
@@ -21,14 +22,16 @@ export default function BoardCommentOverlay({
   onMoveThread,
   onSetThreadResolved,
   draftPosition,
+  toolbarElement,
   onPost,
   onDismiss,
 }: BoardCommentOverlayProps) {
   const { screenToFlowPosition } = useReactFlow();
   const transform = useStore((state) => state.transform);
-  const zoom = transform[2];
+  const [panX, panY, zoom] = transform;
   const width = useStore((state) => state.width);
   const height = useStore((state) => state.height);
+  const canvasElement = useStore((state) => state.domNode);
   const screenScale = zoom ** 0.12;
   const scale = screenScale / zoom;
 
@@ -53,7 +56,17 @@ export default function BoardCommentOverlay({
           style={{ left: draftPosition.x, top: draftPosition.y, scale }}
         >
           <div className="-translate-y-8">
-            <CommentComposer onPost={onPost} onDismiss={onDismiss} />
+            <CommentComposer
+              viewport={{ width, height, scale: screenScale }}
+              canvasElement={canvasElement}
+              toolbarElement={toolbarElement}
+              anchor={{
+                x: panX + draftPosition.x * zoom,
+                y: panY + draftPosition.y * zoom,
+              }}
+              onPost={onPost}
+              onDismiss={onDismiss}
+            />
           </div>
         </div>
       )}

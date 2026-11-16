@@ -44,7 +44,7 @@ function App() {
           commentsButtonRef={commentsButtonRef}
           onToggleComments={commentsOpen ? closeComments : openSidebar}
         />
-        <div className="relative flex min-h-0 flex-1">
+        <div className="plot-workspace relative flex min-h-0 flex-1">
           <main className="relative min-w-0 flex-1 overflow-hidden bg-plot-canvas">
             <Board
               ref={boardRef}
@@ -61,7 +61,7 @@ function App() {
             ref={setToolbarHost}
             className="pointer-events-none absolute inset-0 z-10"
           />
-          <CommentsPanel open={commentsOpen}>
+          <CommentsPanel open={commentsOpen} toolbarHost={toolbarHost}>
             <CommentsSidebar
               open={commentsOpen}
               threads={threads}

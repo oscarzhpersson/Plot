@@ -1,5 +1,5 @@
 import {
-  useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -7,20 +7,19 @@ import {
   type PointerEvent,
   type ReactNode,
 } from "react";
+import { getCommentsPanelLayout, minimumSidebarWidth } from "./commentLayout";
 
 type CommentsPanelProps = {
   open: boolean;
+  toolbarHost: HTMLDivElement | null;
   children: ReactNode;
 };
 
-const minimumWidth = 300;
-const maximumWidth = 640;
-const minimumCanvasWidth = 344;
-const defaultWidth = 400;
+const toolbarGap = 8;
 const keyboardStep = 16;
 
-export default function CommentsPanel({ open, children }: CommentsPanelProps) {
-  const [viewportWidth, setViewportWidth] = useState(() => window.innerWidth);
+export default function CommentsPanel({ open, toolbarHost, children }: CommentsPanelProps) {
+  const [workspace, setWorkspace] = useState<{ width: number; sidebarRoom: number; footer: number } | null>(null);
   const [preferredWidth, setPreferredWidth] = useState<number | null>(null);
   const [resizing, setResizing] = useState(false);
   const dragStart = useRef<{
@@ -29,26 +28,39 @@ export default function CommentsPanel({ open, children }: CommentsPanelProps) {
     width: number;
   } | null>(null);
 
-  useEffect(() => {
-    const updateViewportWidth = () => setViewportWidth(window.innerWidth);
-    window.addEventListener("resize", updateViewportWidth);
-    return () => window.removeEventListener("resize", updateViewportWidth);
-  }, []);
+  useLayoutEffect(() => {
+    // The host contains only the portal-mounted toolbar.
+    const toolbar = toolbarHost?.firstElementChild;
+    if (!toolbarHost || !toolbar) return;
 
-  const maxWidth = Math.max(
-    minimumWidth,
-    Math.min(maximumWidth, viewportWidth - minimumCanvasWidth),
-  );
-  const width = Math.min(
-    maxWidth,
-    preferredWidth ?? Math.max(defaultWidth, Math.round(viewportWidth / 4)),
+    const observer = new ResizeObserver(() => {
+      const hostBounds = toolbarHost.getBoundingClientRect();
+      const toolbarBounds = toolbar.getBoundingClientRect();
+      setWorkspace({
+        width: Math.floor(hostBounds.width),
+        sidebarRoom: Math.floor(hostBounds.right - toolbarBounds.right - toolbarGap),
+        footer: Math.ceil(hostBounds.bottom - toolbarBounds.top + toolbarGap),
+      });
+    });
+
+    observer.observe(toolbarHost);
+    observer.observe(toolbar);
+    return () => observer.disconnect();
+  }, [toolbarHost]);
+
+  const { width, maxWidth, docked } = getCommentsPanelLayout(
+    workspace?.width ?? window.innerWidth - 8,
+    workspace?.sidebarRoom ?? 0,
+    preferredWidth,
   );
   const widthStyle = {
-    "--plot-comments-desktop-width": `${width}px`,
+    "--plot-comments-width": `${width}px`,
+    "--plot-comments-footer": `${workspace?.footer ?? 72}px`,
+    maxWidth: docked ? maxWidth : undefined,
   } as CSSProperties;
 
   function resizeTo(nextWidth: number) {
-    setPreferredWidth(Math.max(minimumWidth, Math.min(maxWidth, nextWidth)));
+    setPreferredWidth(Math.max(minimumSidebarWidth, Math.min(maxWidth, nextWidth)));
   }
 
   function startResize(event: PointerEvent<HTMLDivElement>) {
@@ -77,7 +89,7 @@ export default function CommentsPanel({ open, children }: CommentsPanelProps) {
     const keyboardWidths: Partial<Record<string, number>> = {
       ArrowLeft: width + keyboardStep,
       ArrowRight: width - keyboardStep,
-      Home: minimumWidth,
+      Home: minimumSidebarWidth,
       End: maxWidth,
     };
     const nextWidth = keyboardWidths[event.key];
@@ -94,9 +106,10 @@ export default function CommentsPanel({ open, children }: CommentsPanelProps) {
   return (
     <div
       inert={!open}
+      data-comments-overlay-open={open && !docked ? "" : undefined}
       style={widthStyle}
-      className={`absolute inset-y-0 right-0 z-20 shrink-0 overflow-hidden [--plot-comments-width:min(25rem,calc(100vw-1rem))]
-                  md:relative md:[--plot-comments-width:var(--plot-comments-desktop-width)] ${open ? "w-(--plot-comments-width)" : "w-0"}
+      className={`z-20 shrink-0 overflow-hidden ${docked ? "relative" : "absolute top-0 right-0 bottom-(--plot-comments-footer)"}
+                  ${open ? "w-(--plot-comments-width)" : "w-0"}
                   ${resizing ? "" : `motion-safe:transition-[width] ${motion}`}`}
     >
       <div
@@ -104,23 +117,25 @@ export default function CommentsPanel({ open, children }: CommentsPanelProps) {
       >
         {children}
       </div>
-      <div
-        role="separator"
-        tabIndex={0}
-        aria-label="Resize comments sidebar"
-        aria-controls="comments-sidebar"
-        aria-orientation="vertical"
-        aria-valuemin={minimumWidth}
-        aria-valuemax={maxWidth}
-        aria-valuenow={width}
-        aria-valuetext={`${width} pixels`}
-        onPointerDown={startResize}
-        onPointerMove={moveResize}
-        onLostPointerCapture={stopResize}
-        onKeyDown={resizeWithKey}
-        className={`absolute inset-y-0 left-0 z-10 hidden w-2 touch-none cursor-col-resize select-none outline-none before:absolute before:inset-y-0
-                    before:left-0 before:w-0.5 hover:before:bg-plot-accent focus-visible:before:bg-plot-focus-ring md:block ${resizing ? "before:bg-plot-accent" : ""}`}
-      />
+      {docked && (
+        <div
+          role="separator"
+          tabIndex={0}
+          aria-label="Resize comments sidebar"
+          aria-controls="comments-sidebar"
+          aria-orientation="vertical"
+          aria-valuemin={minimumSidebarWidth}
+          aria-valuemax={maxWidth}
+          aria-valuenow={width}
+          aria-valuetext={`${width} pixels`}
+          onPointerDown={startResize}
+          onPointerMove={moveResize}
+          onLostPointerCapture={stopResize}
+          onKeyDown={resizeWithKey}
+          className={`absolute inset-y-0 left-0 z-10 w-2 touch-none cursor-col-resize select-none outline-none before:absolute before:inset-y-0
+                      before:left-0 before:w-0.5 hover:before:bg-plot-accent focus-visible:before:bg-plot-focus-ring ${resizing ? "before:bg-plot-accent" : ""}`}
+        />
+      )}
     </div>
   );
 }

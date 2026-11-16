@@ -91,6 +91,10 @@ body {
     stroke-width: 3;
   }
 
+  .plot-workspace:has([data-comments-overlay-open]) .react-flow__minimap {
+    visibility: hidden;
+  }
+
   .plot-board .react-flow__viewport-portal {
     /* Keep comments above the raised nodes and connection lines in the viewport. */
     z-index: 1002;
