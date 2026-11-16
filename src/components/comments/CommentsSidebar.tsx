@@ -12,6 +12,7 @@ type CommentsSidebarProps = {
   onSelectThread: (id: string) => void;
   onReply: (threadId: string, body: string) => boolean;
   onEdit: (threadId: string, messageId: string, body: string) => boolean;
+  onSetThreadResolved: (threadId: string, resolved: boolean) => void;
   onClose: () => void;
 };
 
@@ -29,6 +30,7 @@ export default function CommentsSidebar({
   onSelectThread,
   onReply,
   onEdit,
+  onSetThreadResolved,
   onClose,
 }: CommentsSidebarProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -141,6 +143,7 @@ export default function CommentsSidebar({
           thread={activeThread}
           onReply={onReply}
           onEdit={onEdit}
+          onSetResolved={onSetThreadResolved}
         />
       ) : visibleThreads.length > 0 ? (
         <p className="mx-4 border-t border-plot-border py-3 text-sm text-plot-text-muted">

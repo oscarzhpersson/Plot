@@ -84,6 +84,12 @@ export function useBoardComments() {
     return true;
   }
 
+  function setThreadResolved(id: string, resolved: boolean) {
+    const status = resolved ? "resolved" : "open";
+    updateThread(id, (thread) => ({ ...thread, status }));
+    if (activeThreadId === id) setStatusFilter(status);
+  }
+
   function openSidebar() {
     setCommentsOpen(true);
   }
@@ -122,6 +128,7 @@ export function useBoardComments() {
     moveThread,
     replyToThread,
     editMessage,
+    setThreadResolved,
     activeThreadId,
     commentsOpen,
     statusFilter,

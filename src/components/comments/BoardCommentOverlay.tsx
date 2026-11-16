@@ -8,6 +8,7 @@ type BoardCommentOverlayProps = {
   activeThreadId: string | null;
   onSelectThread: (id: string) => void;
   onMoveThread: (id: string, position: XYPosition) => void;
+  onSetThreadResolved: (id: string, resolved: boolean) => void;
   draftPosition: XYPosition | null;
   onPost: (body: string) => void;
   onDismiss: () => void;
@@ -18,6 +19,7 @@ export default function BoardCommentOverlay({
   activeThreadId,
   onSelectThread,
   onMoveThread,
+  onSetThreadResolved,
   draftPosition,
   onPost,
   onDismiss,
@@ -29,10 +31,13 @@ export default function BoardCommentOverlay({
   const height = useStore((state) => state.height);
   const screenScale = zoom ** 0.12;
   const scale = screenScale / zoom;
+  const visibleThreads = threads.filter(
+    ({ id, status }) => status === "open" || id === activeThreadId,
+  );
 
   return (
     <ViewportPortal>
-      {threads.map((thread) => (
+      {visibleThreads.map((thread) => (
         <CommentPin
           key={thread.id}
           thread={thread}
@@ -41,6 +46,7 @@ export default function BoardCommentOverlay({
           screenToFlowPosition={screenToFlowPosition}
           onSelect={onSelectThread}
           onMove={onMoveThread}
+          onSetResolved={onSetThreadResolved}
         />
       ))}
 

@@ -1,5 +1,5 @@
 import { useRef, useState, type Ref } from "react";
-import { Pencil, Reply } from "lucide-react";
+import { Check, Pencil, Reply, RotateCcw } from "lucide-react";
 import type { CommentThread } from "@/data/commentStorage";
 import { isCurrentUser } from "@/data/currentUser";
 
@@ -7,6 +7,7 @@ type CommentThreadDetailProps = {
   thread: CommentThread;
   onReply: (threadId: string, body: string) => boolean;
   onEdit: (threadId: string, messageId: string, body: string) => boolean;
+  onSetResolved: (threadId: string, resolved: boolean) => void;
 };
 
 type MessageFormProps = {
@@ -80,16 +81,29 @@ export default function CommentThreadDetail({
   thread,
   onReply,
   onEdit,
+  onSetResolved,
 }: CommentThreadDetailProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const replyInput = useRef<HTMLTextAreaElement>(null);
+  const resolved = thread.status === "resolved";
 
   return (
     <section
       aria-label="Selected thread"
       className="mx-4 min-h-0 flex-1 overflow-y-auto border-t border-plot-border pt-3 pb-4"
     >
-      <h3 className="mb-3 text-base font-semibold">Thread</h3>
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <h3 className="text-base font-semibold">Thread</h3>
+        <button
+          type="button"
+          onClick={() => onSetResolved(thread.id, !resolved)}
+          className={`plot-toolbar-button inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold
+                      ${resolved ? "bg-plot-resolved-soft text-plot-resolved" : "bg-plot-accent-soft text-plot-accent-soft-foreground"}`}
+        >
+          {resolved ? <RotateCcw size={14} aria-hidden="true" /> : <Check size={14} aria-hidden="true" />}
+          {resolved ? "Reopen" : "Resolve"}
+        </button>
+      </div>
       <ol className="space-y-4">
         {thread.messages.map(({ id, author, body, createdAt }, index) => (
           <li

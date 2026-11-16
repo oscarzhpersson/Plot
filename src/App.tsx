@@ -12,6 +12,7 @@ function App() {
     moveThread,
     replyToThread,
     editMessage,
+    setThreadResolved,
     activeThreadId,
     commentsOpen,
     statusFilter,
@@ -51,6 +52,7 @@ function App() {
               activeThreadId={commentsOpen ? activeThreadId : null}
               onCreateThread={createThread}
               onMoveThread={moveThread}
+              onSetThreadResolved={setThreadResolved}
               onSelectThread={toggleThread}
               toolbarHost={toolbarHost}
             />
@@ -69,6 +71,7 @@ function App() {
               onSelectThread={focusThread}
               onReply={replyToThread}
               onEdit={editMessage}
+              onSetThreadResolved={setThreadResolved}
               onClose={closeComments}
             />
           </CommentsPanel>
