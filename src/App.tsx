@@ -9,6 +9,7 @@ function App() {
   const {
     threads,
     createThread,
+    moveThread,
     activeThreadId,
     commentsOpen,
     statusFilter,
@@ -47,6 +48,7 @@ function App() {
               threads={threads}
               activeThreadId={commentsOpen ? activeThreadId : null}
               onCreateThread={createThread}
+              onMoveThread={moveThread}
               onSelectThread={toggleThread}
               toolbarHost={toolbarHost}
             />

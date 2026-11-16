@@ -43,6 +43,12 @@ export function useBoardComments() {
     return true;
   }
 
+  function moveThread(id: string, position: XYPosition) {
+    setThreads((current) => current.map((thread) =>
+      thread.id === id ? { ...thread, position } : thread,
+    ));
+  }
+
   function openSidebar() {
     setCommentsOpen(true);
   }
@@ -78,6 +84,7 @@ export function useBoardComments() {
   return {
     threads,
     createThread,
+    moveThread,
     activeThreadId,
     commentsOpen,
     statusFilter,

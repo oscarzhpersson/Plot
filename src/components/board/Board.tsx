@@ -38,6 +38,7 @@ type BoardProps = {
   activeThreadId: string | null;
   onCreateThread: (position: XYPosition, body: string) => boolean;
   onSelectThread: (id: string) => void;
+  onMoveThread: (id: string, position: XYPosition) => void;
   toolbarHost?: HTMLDivElement | null;
 };
 
@@ -47,6 +48,7 @@ export default function Board({
   activeThreadId,
   onCreateThread,
   onSelectThread,
+  onMoveThread,
   toolbarHost,
 }: BoardProps) {
   const [tool, setTool] = useState<BoardTool>("pan");
@@ -133,6 +135,7 @@ export default function Board({
           activeThreadId={activeThreadId}
           draftPosition={draftPosition}
           onSelectThread={onSelectThread}
+          onMoveThread={onMoveThread}
           onPost={postComment}
           onDismiss={() => setDraftPosition(null)}
         />
