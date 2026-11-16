@@ -79,6 +79,23 @@ body {
 }
 
 @layer components {
+  .plot-board {
+    --xy-edge-stroke: var(--plot-accent);
+    --xy-edge-stroke-selected: var(--plot-accent-soft-foreground);
+    --xy-edge-stroke-width: 2;
+    --xy-connectionline-stroke: var(--plot-accent);
+    --xy-connectionline-stroke-width: 2;
+  }
+
+  .plot-board .react-flow__edge.selected .react-flow__edge-path {
+    stroke-width: 3;
+  }
+
+  .plot-board .react-flow__viewport-portal {
+    /* Keep comments above the raised nodes and connection lines in the viewport. */
+    z-index: 1002;
+  }
+
   .plot-resize-corner {
     z-index: 2;
     opacity: 0;
@@ -148,7 +165,36 @@ body {
     }
   }
 
+  .plot-comment-pin {
+    @apply grid size-8 shrink-0 origin-bottom-left place-items-center rounded-[11px] rounded-bl-[3px] border-2;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
+    .plot-comment-pin {
+      animation: plot-comment-pin-enter var(--plot-motion-enter)
+        var(--plot-motion-ease-enter);
+    }
+
+    .plot-comment-composer {
+      transform-origin: top left;
+      animation: plot-comment-composer-enter var(--plot-motion-enter)
+        var(--plot-motion-ease-enter);
+    }
+
+    .plot-comment-input {
+      transition: height var(--plot-motion-enter) var(--plot-motion-ease-enter),
+        padding var(--plot-motion-enter) var(--plot-motion-ease-enter);
+    }
+
+    .plot-comment-footer {
+      animation: plot-comment-footer-enter var(--plot-motion-enter)
+        var(--plot-motion-ease-enter);
+    }
+
+    .plot-comment-submit {
+      @apply transition-[background-color,color,scale] duration-(--plot-motion-feedback) ease-(--plot-motion-ease-feedback) enabled:active:scale-90;
+    }
+
     .plot-menu[data-side="top"] {
       --plot-menu-offset: var(--plot-motion-overlay-distance);
     }
@@ -191,5 +237,43 @@ body {
   to {
     opacity: 0;
     translate: 0 var(--plot-menu-offset, 0px);
+  }
+}
+
+@keyframes plot-comment-pin-enter {
+  0% {
+    opacity: 0;
+    scale: 0.78;
+  }
+
+  70% {
+    opacity: 1;
+    scale: 1.05;
+  }
+
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes plot-comment-composer-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-4px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes plot-comment-footer-enter {
+  from {
+    opacity: 0.5;
+  }
+
+  to {
+    opacity: 1;
   }
 }

@@ -5,10 +5,11 @@ import {
   Background,
   ConnectionMode,
   ConnectionLineType,
-  ViewportPortal,
 } from "@xyflow/react";
 import { boardFitOptions } from "./boardViewport";
 import { useBoardGraph } from "@/hooks/useBoardGraph";
+import BoardCommentOverlay, { type BoardComment } from "../comments/BoardCommentOverlay";
+import { currentUser } from "@/data/currentUser";
 import BoardNoteNode from "@/components/card/BoardNoteNode";
 import BoardImageNode from "@/components/card/BoardImageNode";
 import BoardModelNode from "@/components/card/BoardModelNode";
@@ -25,22 +26,18 @@ const nodeTypes = {
   model: BoardModelNode,
 };
 
-const edgeStyle = {
-  stroke: "var(--plot-accent)",
-  strokeWidth: 2,
-};
-
 export default function Board() {
   const [tool, setTool] = useState<BoardTool>("pan");
+  const [draftPosition, setDraftPosition] = useState<XYPosition | null>(null);
+  const [comments, setComments] = useState<BoardComment[]>([]);
 
   const flow = useRef<Pick<
     ReactFlowInstance<BoardNode>,
     "screenToFlowPosition"
   > | null>(null);
-  const [draftPosition, setDraftPosition] = useState<XYPosition | null>(null);
 
   function startComment(event: { clientX: number; clientY: number }) {
-    if (tool !== "comment" || !flow.current) return;
+    if (tool !== "comment" || !flow.current || draftPosition) return;
 
     setDraftPosition(
       flow.current.screenToFlowPosition({
@@ -50,18 +47,36 @@ export default function Board() {
     );
   }
 
+  function postComment(body: string) {
+    const text = body.trim();
+    if (!draftPosition || !text) return;
+
+    const comment = {
+      id: crypto.randomUUID(),
+      position: draftPosition,
+      body: text,
+      author: currentUser,
+    };
+    setComments((current) => [...current, comment]);
+    setDraftPosition(null);
+  }
+
   const graph = useBoardGraph();
+  const isPanMode = tool === "pan";
 
   return (
     <div className="h-full w-full">
       <ReactFlow
         {...graph}
+        className="plot-board"
+        elementsSelectable={isPanMode}
         fitView
         fitViewOptions={boardFitOptions}
-        panOnDrag={tool === "pan"}
+        panOnDrag={isPanMode}
         panOnScroll
         panOnScrollSpeed={1}
         zoomOnScroll={false}
+        zoomOnDoubleClick={isPanMode}
         zoomOnPinch
         maxZoom={3} // TODO: Break out to global settings value?
         proOptions={{ hideAttribution: true }}
@@ -69,25 +84,23 @@ export default function Board() {
         connectionRadius={100}
         connectionMode={ConnectionMode.Loose}
         connectionLineType={ConnectionLineType.SmoothStep}
-        connectionLineStyle={edgeStyle}
-        defaultEdgeOptions={{ type: "smoothstep", style: edgeStyle }}
+        defaultEdgeOptions={{ type: "smoothstep" }}
         onInit={(instance) => {
           flow.current = instance;
         }}
         onPaneClick={startComment}
         onNodeClick={startComment}
+        onEdgeClick={startComment}
       >
         <Background gap={20} size={1} />
         <BoardMap />
         <BoardToolbar tool={tool} setTool={setTool} />
-        <ViewportPortal>
-          {draftPosition && (
-            <span
-              className="absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-plot-accent"
-              style={{ left: draftPosition.x, top: draftPosition.y }}
-            />
-          )}
-        </ViewportPortal>
+        <BoardCommentOverlay
+          comments={comments}
+          draftPosition={draftPosition}
+          onPost={postComment}
+          onDismiss={() => setDraftPosition(null)}
+        />
       </ReactFlow>
     </div>
   );

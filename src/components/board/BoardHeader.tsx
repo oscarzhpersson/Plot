@@ -1,4 +1,5 @@
 import { Box, ChevronRight, MessageCircle } from "lucide-react";
+import { currentUser } from "@/data/currentUser";
 
 export default function BoardHeader() {
   return (
@@ -19,7 +20,7 @@ export default function BoardHeader() {
           Take Home Assignment
         </span>
         <span className="shrink-0 rounded-lg bg-plot-surface-muted px-2.5 py-1 text-xs font-semibold text-plot-text-muted">
-          Oscar Persson
+          {currentUser.name}
         </span>
       </div>
       <div className="flex shrink-0 items-center gap-2 sm:gap-3">
@@ -33,7 +34,7 @@ export default function BoardHeader() {
           <span className="hidden sm:inline">Comments</span>
         </button>
         <span className="grid size-8 place-items-center rounded-xl bg-plot-resolved-soft text-xs font-bold text-plot-resolved">
-          OP
+          {currentUser.initials}
         </span>
       </div>
     </header>
