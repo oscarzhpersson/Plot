@@ -3,6 +3,8 @@ import { z } from "zod";
 
 const gearModelSrc = "/gear-assembly.glb";
 const gearPosterSrc = "/gear-assembly-preview.png";
+const bracketModelSrc = "/mounting-bracket.glb";
+const bracketPosterSrc = "/mounting-bracket-preview.png";
 
 const card = z.object({
   id: z.string().min(1),
@@ -37,6 +39,10 @@ const nodeSchema = z.discriminatedUnion("type", [
         poster: z.string().optional(),
       })
       .transform((data) => {
+        if (data.src === bracketModelSrc && !data.poster) {
+          return { ...data, poster: bracketPosterSrc };
+        }
+
         // Upgrade saved boards that point to the former local-only gear.
         if (data.src !== "/gear.glb" && data.src !== gearModelSrc) return data;
 

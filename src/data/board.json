@@ -46,6 +46,7 @@
         "label": "Mounting Bracket",
         "subtitle": "Mo-Br-01 · Rev C",
         "src": "/mounting-bracket.glb",
+        "poster": "/mounting-bracket-preview.png",
         "alt": "A mounting bracket"
       },
       "width": 360,
