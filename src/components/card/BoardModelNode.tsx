@@ -1,6 +1,6 @@
-import { Canvas, useLoader, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import type { NodeProps } from "@xyflow/react";
-import { Component, Suspense, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { Component, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Box3, PMREMGenerator, Vector3 } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
@@ -98,9 +98,11 @@ function PreviewOrbitControls() {
 
 function ModelPreview({
   src,
+  onFirstFrame,
   onPosterReady,
 }: {
   src: string;
+  onFirstFrame: () => void;
   onPosterReady?: (poster: string) => void;
 }) {
   const { scene } = useLoader(GLTFLoader, src);
@@ -121,6 +123,20 @@ function ModelPreview({
       scale: longestSide > 0 ? 2.6 / longestSide : 1,
     };
   }, [scene]);
+
+  const firstFrame = useRef<number | null>(null);
+
+  useFrame(() => {
+    // The scene renders after useFrame callbacks, so reveal it on the next frame.
+    if (firstFrame.current === null) {
+      firstFrame.current = requestAnimationFrame(onFirstFrame);
+    }
+  });
+
+  useEffect(() => () => {
+    if (firstFrame.current !== null) cancelAnimationFrame(firstFrame.current);
+    firstFrame.current = null;
+  }, []);
 
   useEffect(() => {
     if (!onPosterReady) return;
@@ -190,7 +206,11 @@ function ModelCardPreview({
   selected: boolean;
 }) {
   const [hasOpened, setHasOpened] = useState(selected);
+  const [hasRendered, setHasRendered] = useState(false);
   const [generatedPoster, setGeneratedPoster] = useState(() => loadModelPoster(src));
+  const [initialPoster] = useState(
+    () => generatedPoster ?? suppliedPoster ?? (src === "/gear.glb" ? "/gear-preview.jpg" : undefined),
+  );
   if (selected && !hasOpened) setHasOpened(true);
 
   const onPosterReady = useCallback((image: string) => {
@@ -198,16 +218,20 @@ function ModelCardPreview({
     saveModelPoster(src, image);
   }, [src]);
 
-  const poster = generatedPoster ?? suppliedPoster ?? (src === "/gear.glb" ? "/gear-preview.jpg" : undefined);
-  const unavailable = <PreviewPoster src={poster} status="3D preview unavailable" />;
+  const onFirstFrame = useCallback(() => setHasRendered(true), []);
+  const showModel = hasOpened || selected;
+  const unavailable = (
+    <PreviewPoster src={generatedPoster ?? initialPoster} status="3D preview unavailable" />
+  );
+  const posterStatus = showModel ? "Loading model…" : initialPoster ? undefined : "Select to load model";
 
   return (
     <div
       className={`relative h-full w-full overflow-hidden rounded-xl bg-plot-surface-muted ${selected ? "nodrag nopan cursor-grab active:cursor-grabbing" : ""}`}
     >
-      {hasOpened || selected ? (
-        <PreviewBoundary fallback={unavailable}>
-          <Suspense fallback={<PreviewPoster src={poster} status="Loading model…" />}>
+      <PreviewBoundary fallback={unavailable}>
+        {showModel && (
+          <Suspense fallback={null}>
             <Canvas
               camera={{ position: [3, 4, 4], fov: 23 }}
               frameloop="demand"
@@ -218,14 +242,19 @@ function ModelCardPreview({
               {selected && <PreviewOrbitControls />}
               <ModelPreview
                 src={src}
+                onFirstFrame={onFirstFrame}
                 onPosterReady={generatedPoster ? undefined : onPosterReady}
               />
             </Canvas>
           </Suspense>
-        </PreviewBoundary>
-      ) : (
-        <PreviewPoster src={poster} status={poster ? undefined : "Select to load model"} />
-      )}
+        )}
+        <div
+          aria-hidden={hasRendered}
+          className={`pointer-events-none absolute inset-0 bg-plot-surface-muted motion-safe:transition-opacity motion-safe:duration-(--plot-motion-enter) motion-safe:ease-(--plot-motion-ease-enter) ${hasRendered ? "opacity-0" : "opacity-100"}`}
+        >
+          <PreviewPoster src={initialPoster} status={posterStatus} />
+        </div>
+      </PreviewBoundary>
     </div>
   );
 }
