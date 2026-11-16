@@ -10,5 +10,3 @@ export function viewportAnimation(duration: number) {
       : duration,
   };
 }
-
-export const boardFitPadding = { top: "108px", right: "48px", bottom: "62px", left: "48px" } as const;

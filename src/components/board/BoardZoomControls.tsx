@@ -2,7 +2,8 @@ import { useReactFlow, useStoreApi } from "@xyflow/react";
 import { Minus, Plus, Scan } from "lucide-react";
 import { useCallback, useEffect, useRef, type PointerEvent } from "react";
 
-import { boardFitPadding, boardMotion, viewportAnimation } from "@/lib/motion";
+import { boardMotion, viewportAnimation } from "@/lib/motion";
+import { boardFitOptions } from "./boardViewport";
 import { getNextZoomPercent } from "@/utility/getNextZoomPercent";
 
 import ZoomPresetMenu from "./ZoomPresetMenu";
@@ -129,7 +130,7 @@ export default function BoardZoomControls() {
         onClick={() =>
           void fitView({
             ...viewportAnimation(boardMotion.fit),
-            padding: boardFitPadding,
+            ...boardFitOptions,
           })
         }
       >

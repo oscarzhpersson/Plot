@@ -1,13 +1,15 @@
-import { useState } from "react";
 import { Panel } from "@xyflow/react";
 import BoardActionControls from "./BoardActionControls";
 import BoardZoomControls from "./BoardZoomControls";
 
 import type { BoardTool } from "@/types/Board.type";
 
-export default function BoardToolbar() {
-  const [tool, setTool] = useState<BoardTool>("pan");
+export type BoardToolbarProps = {
+  tool: BoardTool;
+  setTool: (tool: BoardTool) => void;
+};
 
+export default function BoardToolbar({ tool, setTool }: BoardToolbarProps) {
   return (
     <Panel
       position="bottom-center"

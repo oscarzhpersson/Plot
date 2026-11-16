@@ -1,22 +1,18 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import BoardToolbar from "./BoardToolbar";
 import {
   ReactFlow,
-  addEdge,
   Background,
-  useEdgesState,
-  useNodesState,
   ConnectionMode,
   ConnectionLineType,
-  type OnConnect,
 } from "@xyflow/react";
 import BoardMap from "./BoardMap";
-import { boardFitPadding } from "@/lib/motion";
-import { loadBoard, saveBoard } from "@/data/boardStorage";
+import { boardFitOptions } from "./boardViewport";
+import { useBoardGraph } from "@/hooks/useBoardGraph";
 import BoardNoteNode from "@/components/card/BoardNoteNode";
 import BoardImageNode from "@/components/card/BoardImageNode";
 import BoardModelNode from "@/components/card/BoardModelNode";
-import type { BoardNode } from "@/data/boardSchema";
+import type { BoardTool } from "@/types/Board.type";
 
 const nodeTypes = {
   note: BoardNoteNode,
@@ -24,41 +20,24 @@ const nodeTypes = {
   model: BoardModelNode,
 };
 
+const edgeStyle = {
+  stroke: "var(--plot-accent)",
+  strokeWidth: 2,
+};
+
 export default function Board() {
-  const [initialBoard] = useState(loadBoard);
-
-  const [nodes, , onNodesChange] = useNodesState<BoardNode>(initialBoard.nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialBoard.edges);
-
-  const edgeStyle = {
-    stroke: "var(--plot-accent)",
-    strokeWidth: 2,
-  };
-
-  useEffect(() => {
-    if (nodes.some((node) => node.dragging || node.resizing)) return;
-
-    saveBoard({ nodes, edges });
-  }, [nodes, edges]);
-
-  const onConnect = useCallback<OnConnect>(
-    (connection) =>
-      setEdges((currentEdges) => addEdge(connection, currentEdges)),
-    [setEdges],
-  );
+  const [tool, setTool] = useState<BoardTool>("pan");
+  const graph = useBoardGraph();
 
   // TODO: Add line removal.
 
   return (
     <div className="h-full w-full">
       <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
+        {...graph}
         fitView
-        fitViewOptions={{ padding: boardFitPadding }}
+        fitViewOptions={boardFitOptions}
+        panOnDrag={tool === "pan"}
         panOnScroll
         panOnScrollSpeed={1}
         zoomOnScroll={false}
@@ -74,7 +53,7 @@ export default function Board() {
       >
         <Background gap={20} size={1} />
         <BoardMap />
-        <BoardToolbar />
+        <BoardToolbar tool={tool} setTool={setTool} />
       </ReactFlow>
     </div>
   );
