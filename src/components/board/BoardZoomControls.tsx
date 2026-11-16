@@ -2,7 +2,7 @@ import { useReactFlow, useStoreApi } from "@xyflow/react";
 import { Minus, Plus, Scan } from "lucide-react";
 import { useCallback, useEffect, useRef, type PointerEvent } from "react";
 
-import { boardMotion, viewportAnimation } from "@/lib/motion";
+import { boardFitPadding, boardMotion, viewportAnimation } from "@/lib/motion";
 import { getNextZoomPercent } from "@/utility/getNextZoomPercent";
 
 import ZoomPresetMenu from "./ZoomPresetMenu";
@@ -126,7 +126,12 @@ export default function BoardZoomControls() {
         title="Fit board"
         aria-label="Fit board"
         className="plot-toolbar-button grid h-8.5 w-8 place-items-center"
-        onClick={() => void fitView(viewportAnimation(boardMotion.fit))}
+        onClick={() =>
+          void fitView({
+            ...viewportAnimation(boardMotion.fit),
+            padding: boardFitPadding,
+          })
+        }
       >
         <Scan
           size={16}

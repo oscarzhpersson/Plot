@@ -11,6 +11,7 @@ import {
   type OnConnect,
 } from "@xyflow/react";
 import BoardMap from "./BoardMap";
+import { boardFitPadding } from "@/lib/motion";
 import { loadBoard, saveBoard } from "@/data/boardStorage";
 import BoardNoteNode from "@/components/card/BoardNoteNode";
 import BoardImageNode from "@/components/card/BoardImageNode";
@@ -49,7 +50,7 @@ export default function Board() {
   // TODO: Add line removal.
 
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
+    <div className="h-full w-full">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -57,6 +58,7 @@ export default function Board() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         fitView
+        fitViewOptions={{ padding: boardFitPadding }}
         panOnScroll
         panOnScrollSpeed={1}
         zoomOnScroll={false}
