@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
-import type { NodeProps } from "@xyflow/react";
+import { useStore, type NodeProps } from "@xyflow/react";
 import { Component, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Box3, PMREMGenerator, Vector3 } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -209,6 +209,10 @@ function ModelCardPreview({
   poster?: string;
   selected: boolean;
 }) {
+  const zoomedIn = useStore((state) => state.transform[2] >= 1.5);
+  const previewDpr = selected && zoomedIn
+    ? 2 * Math.min(window.devicePixelRatio, 2)
+    : undefined;
   const [hasOpened, setHasOpened] = useState(selected);
   const [hasRendered, setHasRendered] = useState(false);
   const [generatedPoster, setGeneratedPoster] = useState(() => loadModelPoster(src));
@@ -236,6 +240,7 @@ function ModelCardPreview({
           <Suspense fallback={null}>
             <Canvas
               camera={{ position: [3, 4, 4], fov: 23 }}
+              dpr={previewDpr}
               frameloop="demand"
               resize={{ offsetSize: true, scroll: false }}
               fallback={unavailable}

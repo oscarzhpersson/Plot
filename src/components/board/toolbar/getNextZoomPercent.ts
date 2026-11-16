@@ -1,3 +1,5 @@
+import { boardZoomLimits } from "../boardViewport";
+
 export function getNextZoomPercent(
   zoom: number,
   direction: "in" | "out",
@@ -10,5 +12,7 @@ export function getNextZoomPercent(
   const step = target < 100 ? 5 : target < 200 ? 10 : 25;
   const round = zoomingIn ? Math.ceil : Math.floor;
 
-  return Math.max(50, Math.min(300, round(target / step) * step));
+  const { minZoom, maxZoom } = boardZoomLimits;
+  const next = round(target / step) * step;
+  return Math.max(minZoom * 100, Math.min(maxZoom * 100, next));
 }

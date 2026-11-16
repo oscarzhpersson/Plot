@@ -2,6 +2,7 @@ import { useId, useRef, useState, type PointerEvent } from "react";
 import { Check } from "lucide-react";
 import type { ReactFlowInstance, Transform, XYPosition } from "@xyflow/react";
 import type { CommentThread } from "@/data/commentStorage";
+import { formatCommentTimestamp } from "./formatCommentTimestamp";
 
 type CommentPinProps = {
   thread: CommentThread;
@@ -39,7 +40,7 @@ export default function CommentPin({
   const {
     id,
     position,
-    messages: [{ author, body }],
+    messages: [{ author, body, createdAt }],
   } = thread;
   const tooltipId = useId();
   const resolved = thread.status === "resolved";
@@ -156,7 +157,7 @@ export default function CommentPin({
                     focus-visible:outline-plot-focus-ring motion-safe:transition-[scale,background-color,border-color,color]
                     motion-safe:duration-(--plot-motion-feedback)
                     motion-safe:ease-(--plot-motion-ease-feedback) motion-safe:group-hover:scale-110
-                    ${dragPosition ? "cursor-grabbing" : "cursor-default"}
+                    ${dragPosition ? "cursor-grabbing" : "cursor-pointer"}
                     ${
                       resolved
                         ? "border-plot-resolved bg-plot-resolved-soft text-plot-resolved aria-pressed:bg-plot-resolved aria-pressed:text-plot-resolved-soft"
@@ -186,8 +187,11 @@ export default function CommentPin({
           style={{ width: previewWidth }}
         >
           <div id={tooltipId} role="tooltip">
-            <div className="mb-1 wrap-anywhere pr-6 font-semibold">
-              {author.name}
+            <div className="mb-2 wrap-anywhere pr-6">
+              <div className="font-semibold">{author.name}</div>
+              <time dateTime={createdAt} className="block text-xs text-plot-text-muted">
+                {formatCommentTimestamp(createdAt)}
+              </time>
             </div>
             <p className="max-h-32 overflow-y-auto overscroll-contain wrap-anywhere whitespace-pre-wrap">
               {body}

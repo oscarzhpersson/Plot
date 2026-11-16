@@ -2,6 +2,7 @@ import { useRef, useState, type Ref } from "react";
 import { Check, Pencil, Reply, RotateCcw } from "lucide-react";
 import type { CommentThread } from "@/data/commentStorage";
 import { isCurrentUser } from "@/data/currentUser";
+import { formatCommentTimestamp } from "./formatCommentTimestamp";
 
 type CommentThreadDetailProps = {
   thread: CommentThread;
@@ -18,11 +19,6 @@ type MessageFormProps = {
   inputRef?: Ref<HTMLTextAreaElement>;
   onCancel?: () => void;
 };
-
-const timestamp = new Intl.DateTimeFormat(undefined, {
-  dateStyle: "medium",
-  timeStyle: "short",
-});
 
 function MessageForm({
   label,
@@ -132,7 +128,7 @@ export default function CommentThreadDetail({
                   dateTime={createdAt}
                   className="text-xs text-plot-text-muted"
                 >
-                  {timestamp.format(new Date(createdAt))}
+                  {formatCommentTimestamp(createdAt)}
                 </time>
               </div>
               {editingId !== id && (

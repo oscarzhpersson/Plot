@@ -8,7 +8,7 @@ import {
   ConnectionMode,
   ConnectionLineType,
 } from "@xyflow/react";
-import { boardFitOptions } from "./boardViewport";
+import { boardFitOptions, boardZoomLimits } from "./boardViewport";
 import { useBoardGraph } from "@/hooks/useBoardGraph";
 import BoardCommentOverlay from "../comments/BoardCommentOverlay";
 import BoardNoteNode from "@/components/card/BoardNoteNode";
@@ -139,7 +139,7 @@ export default function Board({
         zoomOnScroll={false}
         zoomOnDoubleClick={isPanMode}
         zoomOnPinch
-        maxZoom={3}
+        {...boardZoomLimits}
         proOptions={{ hideAttribution: true }}
         nodeTypes={nodeTypes}
         connectionRadius={100}
