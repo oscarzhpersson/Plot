@@ -151,11 +151,12 @@ export default function CommentPin({
           }
           onSelect(id);
         }}
-        className={`plot-comment-pin peer nodrag nopan touch-none cursor-grab select-none text-xs font-semibold
-                    active:cursor-grabbing aria-pressed:shadow focus-visible:outline-2 focus-visible:outline-offset-2
+        className={`plot-comment-pin peer nodrag nopan touch-none select-none text-xs font-semibold
+                    aria-pressed:shadow focus-visible:outline-2 focus-visible:outline-offset-2
                     focus-visible:outline-plot-focus-ring motion-safe:transition-[scale,background-color,border-color,color]
                     motion-safe:duration-(--plot-motion-feedback)
                     motion-safe:ease-(--plot-motion-ease-feedback) motion-safe:group-hover:scale-110
+                    ${dragPosition ? "cursor-grabbing" : "cursor-default"}
                     ${
                       resolved
                         ? "border-plot-resolved bg-plot-resolved-soft text-plot-resolved aria-pressed:bg-plot-resolved aria-pressed:text-plot-resolved-soft"
@@ -163,8 +164,14 @@ export default function CommentPin({
                     }`}
       >
         {resolved ? (
-          <Check className="plot-comment-pin-check" size={16} aria-hidden="true" />
-        ) : author.initials}
+          <Check
+            className="plot-comment-pin-check"
+            size={16}
+            aria-hidden="true"
+          />
+        ) : (
+          author.initials
+        )}
       </button>
       <div
         className={`invisible absolute opacity-0 peer-focus-visible:visible peer-focus-visible:opacity-100 focus-within:visible focus-within:opacity-100
