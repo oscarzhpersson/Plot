@@ -36,7 +36,8 @@ function MessageForm({
 
   return (
     <form
-      className="mt-3 rounded-xl border border-plot-border bg-plot-surface p-2 focus-within:border-plot-focus-ring"
+      className={`mt-3 rounded-xl border border-plot-border bg-plot-surface p-2 focus-within:border-plot-focus-ring
+                  ${onCancel ? "plot-comment-message-enter" : ""}`}
       onSubmit={(event) => {
         event.preventDefault();
         if (body && onSubmit(body)) setText("");
@@ -95,7 +96,7 @@ export default function CommentThreadDetail({
             key={id}
             className={
               index > 0
-                ? "ml-3 rounded-lg bg-plot-surface-muted p-2.5"
+                ? "plot-comment-message-enter ml-3 rounded-lg bg-plot-surface-muted p-2.5"
                 : undefined
             }
           >
