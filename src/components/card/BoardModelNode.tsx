@@ -178,19 +178,23 @@ function ModelPreview({
 export default function BoardModelNode({
   data,
   selected,
+  draggable,
+  isConnectable,
 }: NodeProps<ModelNode>) {
   return (
     <BoardCard
       title={data.label}
       subtitle={data.subtitle}
       selected={selected}
+      draggable={draggable}
+      isConnectable={isConnectable}
       badge="3D model"
     >
       <ModelCardPreview
         key={data.src}
         src={data.src}
         poster={data.poster}
-        selected={selected}
+        selected={selected && draggable}
       />
     </BoardCard>
   );

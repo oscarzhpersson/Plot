@@ -91,6 +91,18 @@ body {
     stroke-width: 3;
   }
 
+  .plot-board[data-tool="comment"] :is(.react-flow__pane, .react-flow__edge-interaction) {
+    cursor: crosshair;
+  }
+
+  .plot-board[data-tool="comment"] .react-flow__node-model canvas {
+    pointer-events: none;
+  }
+
+  .plot-board[data-tool="comment"] .react-flow__nodesselection {
+    visibility: hidden;
+  }
+
   .plot-workspace:has([data-comments-overlay-open]) .react-flow__minimap {
     visibility: hidden;
   }

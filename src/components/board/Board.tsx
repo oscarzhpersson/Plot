@@ -28,6 +28,8 @@ const nodeTypes = {
   model: BoardModelNode,
 };
 
+const commentClickDistance = 4;
+
 export type BoardHandle = {
   focusComment: (position: XYPosition) => void;
 };
@@ -56,6 +58,7 @@ export default function Board({
   const [tool, setTool] = useState<BoardTool>("pan");
   const [toolbarElement, setToolbarElement] = useState<HTMLDivElement | null>(null);
   const [draftPosition, setDraftPosition] = useState<XYPosition | null>(null);
+  const commentPress = useRef<XYPosition | null>(null);
 
   const flow = useRef<Pick<
     ReactFlowInstance<BoardNode>,
@@ -79,7 +82,16 @@ export default function Board({
   );
 
   function startComment(event: { clientX: number; clientY: number }) {
+    const press = commentPress.current;
+    commentPress.current = null;
     if (tool !== "comment" || !flow.current || draftPosition) return;
+
+    if (
+      press &&
+      Math.hypot(event.clientX - press.x, event.clientY - press.y) > commentClickDistance
+    ) {
+      return;
+    }
 
     setDraftPosition(
       flow.current.screenToFlowPosition({
@@ -109,7 +121,16 @@ export default function Board({
       <ReactFlow
         {...graph}
         className="plot-board"
+        data-tool={tool}
         elementsSelectable={isPanMode}
+        nodesDraggable={isPanMode}
+        nodesConnectable={isPanMode}
+        nodesFocusable={isPanMode}
+        edgesFocusable={isPanMode}
+        edgesReconnectable={isPanMode}
+        connectOnClick={isPanMode}
+        deleteKeyCode={isPanMode ? "Backspace" : null}
+        selectionKeyCode={isPanMode ? "Shift" : null}
         fitView
         fitViewOptions={boardFitOptions}
         panOnDrag={isPanMode}
@@ -127,6 +148,11 @@ export default function Board({
         defaultEdgeOptions={{ type: "smoothstep" }}
         onInit={(instance) => {
           flow.current = instance;
+        }}
+        onPointerDownCapture={(event) => {
+          if (!isPanMode && event.isPrimary && event.button === 0) {
+            commentPress.current = { x: event.clientX, y: event.clientY };
+          }
         }}
         onPaneClick={startComment}
         onNodeClick={startComment}

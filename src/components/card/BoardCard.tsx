@@ -11,6 +11,8 @@ type BoardCardProps = {
   title: string;
   subtitle: string;
   selected: boolean;
+  draggable: boolean;
+  isConnectable: boolean;
   badge?: string;
   children: ReactNode;
 };
@@ -19,6 +21,8 @@ export default function BoardCard({
   title,
   subtitle,
   selected = false,
+  draggable,
+  isConnectable,
   badge,
   children,
 }: BoardCardProps) {
@@ -31,6 +35,7 @@ export default function BoardCard({
   );
 
   const connections = useNodeConnections();
+  const isEditing = selected && draggable;
 
   const isConnected = (side: string) =>
     connections.some(
@@ -40,7 +45,7 @@ export default function BoardCard({
     );
 
   const handleVisibility =
-    selected || nearby
+    isEditing || nearby
       ? "opacity-100"
       : connecting
         ? "opacity-0 group-hover:opacity-100"
@@ -48,16 +53,18 @@ export default function BoardCard({
 
   return (
     <div className="group relative h-full w-full">
-      {generateCardHandles(handleVisibility, isConnected)}
+      {generateCardHandles(handleVisibility, isConnected, isConnectable)}
       <NodeResizer
-        isVisible={selected && !connecting}
+        isVisible={isEditing && !connecting}
         minWidth={220}
         minHeight={150}
         handleClassName="plot-resize-corner"
         lineClassName="plot-resize-edge"
       />
       <article
-        className={`flex h-full w-full cursor-default flex-col rounded-2xl border ${selected ? "border-plot-accent" : "border-plot-border"} bg-plot-surface p-4 text-plot-text shadow active:cursor-grabbing`}
+        className={`flex h-full w-full flex-col rounded-2xl border bg-plot-surface p-4 text-plot-text shadow
+                    ${isEditing ? "border-plot-accent" : "border-plot-border"}
+                    ${draggable ? "cursor-default active:cursor-grabbing" : "cursor-crosshair"}`}
       >
         <header className="flex shrink-0 items-center justify-between gap-3">
           <div>
