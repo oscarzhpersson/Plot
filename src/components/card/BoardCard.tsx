@@ -5,7 +5,7 @@ import {
   useNodeConnections,
   NodeResizer,
 } from "@xyflow/react";
-import generateCardHandles from "@/utility/generateCardHandles";
+import generateCardHandles from "./generateCardHandles";
 
 type BoardCardProps = {
   title: string;

@@ -2,9 +2,9 @@ import { useReactFlow, useStoreApi } from "@xyflow/react";
 import { Minus, Plus, Scan } from "lucide-react";
 import { useCallback, useEffect, useRef, type PointerEvent } from "react";
 
-import { boardMotion, viewportAnimation } from "@/lib/motion";
-import { boardFitOptions } from "./boardViewport";
-import { getNextZoomPercent } from "@/utility/getNextZoomPercent";
+import { boardMotion, viewportAnimation } from "./motion";
+import { boardFitOptions } from "../boardViewport";
+import { getNextZoomPercent } from "./getNextZoomPercent";
 
 import ZoomPresetMenu from "./ZoomPresetMenu";
 

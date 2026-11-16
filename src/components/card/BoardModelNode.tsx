@@ -6,7 +6,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import type { BoardNode } from "@/data/boardSchema";
-import { loadModelPoster, saveModelPoster } from "@/data/modelPosterCache";
+import { loadModelPoster, saveModelPoster } from "./modelPosterCache";
 import BoardCard from "./BoardCard";
 
 type ModelNode = Extract<BoardNode, { type: "model" }>;

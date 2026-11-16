@@ -2,7 +2,7 @@ import { Panel } from "@xyflow/react";
 import BoardActionControls from "./BoardActionControls";
 import BoardZoomControls from "./BoardZoomControls";
 
-import type { BoardTool } from "@/types/Board.type";
+import type { BoardTool } from "../boardTypes";
 
 export type BoardToolbarProps = {
   tool: BoardTool;

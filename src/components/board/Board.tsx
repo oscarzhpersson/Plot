@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import BoardToolbar from "./BoardToolbar";
+import BoardToolbar from "./toolbar/BoardToolbar";
 import {
   ReactFlow,
   Background,
@@ -15,7 +15,7 @@ import BoardModelNode from "@/components/card/BoardModelNode";
 
 import BoardMap from "./BoardMap";
 
-import type { BoardTool } from "@/types/Board.type";
+import type { BoardTool } from "./boardTypes";
 import type { BoardNode } from "@/data/boardSchema";
 import type { ReactFlowInstance, XYPosition } from "@xyflow/react";
 

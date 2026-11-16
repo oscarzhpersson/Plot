@@ -1,6 +1,6 @@
 import { Hand, MessageCircle } from "lucide-react";
 
-import type { BoardTool } from "@/types/Board.type";
+import type { BoardTool } from "../boardTypes";
 
 export type BoardActionControlProps = {
   current: BoardTool;

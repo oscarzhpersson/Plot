@@ -2,7 +2,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useReactFlow, useViewport } from "@xyflow/react";
 import { Check, ChevronDown } from "lucide-react";
 
-import { boardMotion, viewportAnimation } from "@/lib/motion";
+import { boardMotion, viewportAnimation } from "./motion";
 
 const zoomPresets = [50, 75, 100, 150, 200]; // TODO: Move to external file
 
