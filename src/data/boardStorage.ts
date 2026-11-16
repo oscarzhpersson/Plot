@@ -10,7 +10,6 @@ export function loadBoard(): BoardSnapshot {
     if (raw !== null) return boardSchema.parse(JSON.parse(raw));
   } catch (error: unknown) {
     console.warn(
-      // TODO: Given time add a toast error.
       "Could not load the saved board. Using the starter board.",
       error,
     );
@@ -25,7 +24,6 @@ export function saveBoard(board: BoardSnapshotInput) {
     localStorage.setItem(storageKey, JSON.stringify(snapshot));
   } catch (error: unknown) {
     console.warn(
-      // TODO: Given time add a toast error.
       "Could not save the board. Changes may be lost on reload.",
       error,
     );

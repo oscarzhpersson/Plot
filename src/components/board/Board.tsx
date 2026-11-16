@@ -118,7 +118,7 @@ export default function Board({
         zoomOnScroll={false}
         zoomOnDoubleClick={isPanMode}
         zoomOnPinch
-        maxZoom={3} // TODO: Break out to global settings value?
+        maxZoom={3}
         proOptions={{ hideAttribution: true }}
         nodeTypes={nodeTypes}
         connectionRadius={100}

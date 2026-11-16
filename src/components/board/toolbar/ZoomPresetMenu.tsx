@@ -4,7 +4,7 @@ import { Check, ChevronDown } from "lucide-react";
 
 import { boardMotion, viewportAnimation } from "./motion";
 
-const zoomPresets = [50, 75, 100, 150, 200]; // TODO: Move to external file
+const zoomPresets = [50, 75, 100, 150, 200];
 
 export default function ZoomPresetMenu() {
   const { zoomTo } = useReactFlow();

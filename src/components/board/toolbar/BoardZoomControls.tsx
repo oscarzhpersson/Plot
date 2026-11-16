@@ -8,8 +8,8 @@ import { getNextZoomPercent } from "./getNextZoomPercent";
 
 import ZoomPresetMenu from "./ZoomPresetMenu";
 
-const zoomHoldDelay = 320; // TODO: Add to separate file
-const zoomHoldDoublingTime = 800; // TODO: Add to separate file
+const zoomHoldDelay = 320;
+const zoomHoldDoublingTime = 800;
 
 type ZoomDirection = "in" | "out";
 
