@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import Board from "@/components/board/Board";
+import Board, { type BoardHandle } from "@/components/board/Board";
 import BoardHeader from "@/components/board/BoardHeader";
 import CommentsPanel from "@/components/comments/CommentsPanel";
 import CommentsSidebar from "@/components/comments/CommentsSidebar";
@@ -18,8 +18,14 @@ function App() {
     toggleThread,
     selectStatusFilter,
   } = useBoardComments();
+  const boardRef = useRef<BoardHandle>(null);
   const commentsButtonRef = useRef<HTMLButtonElement>(null);
   const [toolbarHost, setToolbarHost] = useState<HTMLDivElement | null>(null);
+
+  function focusThread(id: string) {
+    const thread = openThread(id);
+    if (thread) boardRef.current?.focusComment(thread.position);
+  }
 
   function closeComments() {
     closeSidebar();
@@ -37,6 +43,7 @@ function App() {
         <div className="relative flex min-h-0 flex-1">
           <main className="relative min-w-0 flex-1 overflow-hidden bg-plot-canvas">
             <Board
+              ref={boardRef}
               threads={threads}
               activeThreadId={commentsOpen ? activeThreadId : null}
               onCreateThread={createThread}
@@ -55,7 +62,7 @@ function App() {
               activeThreadId={activeThreadId}
               status={statusFilter}
               onChangeStatus={selectStatusFilter}
-              onSelectThread={openThread}
+              onSelectThread={focusThread}
               onClose={closeComments}
             />
           </CommentsPanel>

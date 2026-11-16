@@ -58,6 +58,7 @@ export function useBoardComments() {
     setStatusFilter(thread.status);
     setActiveThreadId(thread.id);
     openSidebar();
+    return thread;
   }
 
   function toggleThread(id: string) {
