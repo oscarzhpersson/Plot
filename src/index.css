@@ -181,7 +181,8 @@ body {
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .plot-comment-pin {
+    .plot-comment-pin,
+    .plot-comment-pin-check {
       animation: plot-comment-pin-enter var(--plot-motion-enter)
         var(--plot-motion-ease-enter);
     }

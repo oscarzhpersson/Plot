@@ -126,7 +126,7 @@ export default function CommentPin({
     224,
     Math.max(80, (openLeft ? spaceLeft : spaceRight) - 16),
   );
-  const openUp = height - anchorY < 180 * screenScale && anchorY > height / 2;
+  const openUp = height - anchorY < 144 * screenScale && anchorY > height / 2;
 
   return (
     <div
@@ -153,7 +153,8 @@ export default function CommentPin({
         }}
         className={`plot-comment-pin peer nodrag nopan touch-none cursor-grab select-none text-xs font-semibold
                     active:cursor-grabbing aria-pressed:shadow focus-visible:outline-2 focus-visible:outline-offset-2
-                    focus-visible:outline-plot-focus-ring motion-safe:transition-[scale] motion-safe:duration-(--plot-motion-feedback)
+                    focus-visible:outline-plot-focus-ring motion-safe:transition-[scale,background-color,border-color,color]
+                    motion-safe:duration-(--plot-motion-feedback)
                     motion-safe:ease-(--plot-motion-ease-feedback) motion-safe:group-hover:scale-110
                     ${
                       resolved
@@ -161,7 +162,9 @@ export default function CommentPin({
                         : "border-plot-accent bg-plot-surface text-plot-accent-soft-foreground aria-pressed:border-plot-surface aria-pressed:bg-plot-accent aria-pressed:text-plot-accent-foreground"
                     }`}
       >
-        {resolved ? <Check size={16} aria-hidden="true" /> : author.initials}
+        {resolved ? (
+          <Check className="plot-comment-pin-check" size={16} aria-hidden="true" />
+        ) : author.initials}
       </button>
       <div
         className={`invisible absolute opacity-0 peer-focus-visible:visible peer-focus-visible:opacity-100 focus-within:visible focus-within:opacity-100
@@ -172,32 +175,27 @@ export default function CommentPin({
                     ${openLeft ? "right-full origin-right pr-2" : "left-full origin-left pl-2"} ${openUp ? "bottom-0" : "top-0"}`}
       >
         <div
-          className="nopan nowheel rounded-xl border border-plot-border bg-plot-surface p-3 text-sm text-plot-text shadow"
+          className="nopan nowheel relative rounded-xl border border-plot-border bg-plot-surface p-3 text-sm text-plot-text shadow"
           style={{ width: previewWidth }}
         >
           <div id={tooltipId} role="tooltip">
-            <div className="mb-1 wrap-anywhere font-semibold">
+            <div className="mb-1 wrap-anywhere pr-6 font-semibold">
               {author.name}
             </div>
             <p className="max-h-32 overflow-y-auto overscroll-contain wrap-anywhere whitespace-pre-wrap">
               {body}
             </p>
           </div>
-          <label
-            className="mt-2 flex cursor-pointer items-center gap-2 border-t border-plot-border
-                            pt-2 text-xs font-medium text-plot-text-muted"
+          <button
+            type="button"
+            aria-label={resolved ? "Reopen thread" : "Resolve thread"}
+            title={resolved ? "Reopen" : "Resolve"}
+            onClick={() => onSetResolved(id, !resolved)}
+            className={`plot-toolbar-button absolute top-2 right-2 grid size-6 place-items-center
+                        ${resolved ? "bg-plot-resolved-soft text-plot-resolved" : "text-plot-text-muted hover:text-plot-resolved"}`}
           >
-            <input
-              type="checkbox"
-              checked={resolved}
-              onChange={(event) =>
-                onSetResolved(id, event.currentTarget.checked)
-              }
-              className="size-4 cursor-pointer accent-plot-resolved focus-visible:outline-2
-                          focus-visible:outline-offset-2 focus-visible:outline-plot-focus-ring"
-            />
-            Resolved
-          </label>
+            <Check size={14} aria-hidden="true" />
+          </button>
         </div>
       </div>
     </div>

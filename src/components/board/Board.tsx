@@ -97,6 +97,9 @@ export default function Board({
 
   const graph = useBoardGraph();
   const isPanMode = tool === "pan";
+  const visibleThreads = threads.filter(
+    ({ id, status }) => status === "open" || id === activeThreadId,
+  );
   const toolbar = (
     <BoardToolbar ref={setToolbarElement} tool={tool} setTool={setTool} />
   );
@@ -130,10 +133,10 @@ export default function Board({
         onEdgeClick={startComment}
       >
         <Background gap={20} size={1} />
-        <BoardMap toolbarElement={toolbarElement} />
+        <BoardMap toolbarElement={toolbarElement} threads={visibleThreads} />
         {toolbarHost ? createPortal(toolbar, toolbarHost) : toolbar}
         <BoardCommentOverlay
-          threads={threads}
+          threads={visibleThreads}
           activeThreadId={activeThreadId}
           draftPosition={draftPosition}
           onSelectThread={onSelectThread}

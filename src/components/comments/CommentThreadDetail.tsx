@@ -100,7 +100,11 @@ export default function CommentThreadDetail({
           className={`plot-toolbar-button inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold
                       ${resolved ? "bg-plot-resolved-soft text-plot-resolved" : "bg-plot-accent-soft text-plot-accent-soft-foreground"}`}
         >
-          {resolved ? <RotateCcw size={14} aria-hidden="true" /> : <Check size={14} aria-hidden="true" />}
+          {resolved ? (
+            <RotateCcw size={14} aria-hidden="true" />
+          ) : (
+            <Check size={14} aria-hidden="true" />
+          )}
           {resolved ? "Reopen" : "Resolve"}
         </button>
       </div>
@@ -115,7 +119,8 @@ export default function CommentThreadDetail({
             <div className="flex items-center gap-2.5">
               <span
                 aria-hidden="true"
-                className="grid size-8 shrink-0 place-items-center rounded-lg bg-plot-accent-soft text-xs font-semibold text-plot-accent-soft-foreground"
+                className="grid size-8 shrink-0 place-items-center rounded-lg bg-plot-accent/20 text-xs
+                            font-semibold text-plot-accent-soft-foreground"
               >
                 {author.initials}
               </span>

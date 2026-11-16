@@ -31,13 +31,10 @@ export default function BoardCommentOverlay({
   const height = useStore((state) => state.height);
   const screenScale = zoom ** 0.12;
   const scale = screenScale / zoom;
-  const visibleThreads = threads.filter(
-    ({ id, status }) => status === "open" || id === activeThreadId,
-  );
 
   return (
     <ViewportPortal>
-      {visibleThreads.map((thread) => (
+      {threads.map((thread) => (
         <CommentPin
           key={thread.id}
           thread={thread}
