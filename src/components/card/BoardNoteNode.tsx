@@ -15,8 +15,9 @@ export default function BoardNoteNode({
       selected={selected}
       draggable={draggable}
       isConnectable={isConnectable}
+      fitContent
     >
-      <p className="w-80 max-w-full text-sm">{data.text}</p>
+      <p className="w-80 max-w-full wrap-anywhere text-sm">{data.text}</p>
     </BoardCard>
   );
 }
