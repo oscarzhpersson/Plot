@@ -70,15 +70,32 @@ export default function CommentComposer({
 
   const dismiss = useEffectEvent(onDismiss);
   const getHasBody = useEffectEvent(() => hasBody);
+  const isCanvasClick = useEffectEvent((path: EventTarget[]) =>
+    canvasElement !== null && path.includes(canvasElement) &&
+    (toolbarElement === null || !path.includes(toolbarElement)),
+  );
 
   useEffect(() => {
     textareaRef.current?.focus({ preventScroll: true });
 
     let dismissTimer: number | undefined;
+    let shake: Animation | undefined;
 
     function handleOutsideClick(event: MouseEvent) {
       const composer = composerRef.current;
-      if (!composer || getHasBody() || event.composedPath().includes(composer)) return;
+      const path = event.composedPath();
+      if (!composer || path.includes(composer)) return;
+
+      if (getHasBody()) {
+        if (!isCanvasClick(path) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+        shake?.cancel();
+        shake = formRef.current?.animate(
+          [{ translate: "0" }, { translate: "-4px" }, { translate: "4px" }, { translate: "0" }],
+          { duration: 180, easing: "ease-out" },
+        );
+        return;
+      }
 
       // Defer dismissal so a canvas click can't immediately place a replacement draft.
       window.clearTimeout(dismissTimer);
@@ -98,6 +115,7 @@ export default function CommentComposer({
       document.removeEventListener("click", handleOutsideClick, true);
       document.removeEventListener("keydown", handleEscape);
       window.clearTimeout(dismissTimer);
+      shake?.cancel();
     };
   }, []);
 
