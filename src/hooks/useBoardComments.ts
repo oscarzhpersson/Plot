@@ -32,9 +32,9 @@ export function useBoardComments() {
     }
   }, [threads]);
 
-  function createThread(position: XYPosition, body: string): boolean {
+  function createThread(position: XYPosition, body: string): CommentThread | undefined {
     const text = body.trim();
-    if (!text) return false;
+    if (!text) return;
 
     const thread: CommentThread = {
       id: crypto.randomUUID(),
@@ -45,7 +45,7 @@ export function useBoardComments() {
 
     setThreads((current) => [...current, thread]);
     showThread(thread);
-    return true;
+    return thread;
   }
 
   function updateThread(id: string, update: (thread: CommentThread) => CommentThread) {

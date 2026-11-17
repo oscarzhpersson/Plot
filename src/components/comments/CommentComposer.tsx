@@ -26,7 +26,6 @@ export default function CommentComposer({
   const composerRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const discardArmed = useRef(false);
   const body = text.trim();
   const hasBody = body.length > 0;
 
@@ -76,33 +75,14 @@ export default function CommentComposer({
     textareaRef.current?.focus({ preventScroll: true });
 
     let dismissTimer: number | undefined;
-    let shake: Animation | undefined;
 
     function handleOutsideClick(event: MouseEvent) {
-      const form = formRef.current;
       const composer = composerRef.current;
-      if (!form || !composer) return;
+      if (!composer || getHasBody() || event.composedPath().includes(composer)) return;
 
-      if (event.composedPath().includes(composer)) {
-        discardArmed.current = false;
-        return;
-      }
-
-      if (!getHasBody() || discardArmed.current) {
-        // Let the board handle this click while the draft is still open.
-        window.clearTimeout(dismissTimer);
-        dismissTimer = window.setTimeout(dismiss, 0);
-        return;
-      }
-
-      discardArmed.current = true;
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-      shake?.cancel();
-      shake = form.animate(
-        [{ translate: "0" }, { translate: "-4px" }, { translate: "4px" }, { translate: "0" }],
-        { duration: 180, easing: "ease-out" },
-      );
+      // Defer dismissal so a canvas click can't immediately place a replacement draft.
+      window.clearTimeout(dismissTimer);
+      dismissTimer = window.setTimeout(dismiss, 0);
     }
 
     function handleEscape(event: KeyboardEvent) {
@@ -118,7 +98,6 @@ export default function CommentComposer({
       document.removeEventListener("click", handleOutsideClick, true);
       document.removeEventListener("keydown", handleEscape);
       window.clearTimeout(dismissTimer);
-      shake?.cancel();
     };
   }, []);
 
@@ -145,10 +124,7 @@ export default function CommentComposer({
           placeholder="Add a comment"
           rows={hasBody ? 3 : 1}
           value={text}
-          onChange={(event) => {
-            discardArmed.current = false;
-            setText(event.target.value);
-          }}
+          onChange={(event) => setText(event.target.value)}
           className={`plot-comment-input w-full resize-none rounded-2xl px-4 text-sm leading-5 outline-none placeholder:text-plot-text-muted ${hasBody ? "col-span-2 h-21 py-3" : "h-10 py-2.5"}`}
         />
         <div

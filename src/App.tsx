@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { XYPosition } from "@xyflow/react";
 import Board, { type BoardHandle } from "@/components/board/Board";
 import BoardHeader from "@/components/board/BoardHeader";
 import CommentsPanel from "@/components/comments/CommentsPanel";
@@ -24,7 +25,41 @@ function App() {
   } = useBoardComments();
   const boardRef = useRef<BoardHandle>(null);
   const commentsButtonRef = useRef<HTMLButtonElement>(null);
+  const commentsPanelRef = useRef<HTMLDivElement>(null);
   const [toolbarHost, setToolbarHost] = useState<HTMLDivElement | null>(null);
+  const [postedThreadId, setPostedThreadId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!postedThreadId) return;
+
+    let cancelled = false;
+    const frame = requestAnimationFrame(() => {
+      const panel = commentsPanelRef.current;
+      // Read layout first so any sidebar width transition has started.
+      panel?.getBoundingClientRect();
+      const animations = panel?.getAnimations() ?? [];
+      void Promise.allSettled(animations.map((animation) => animation.finished)).then(() => {
+        if (cancelled) return;
+
+        if (commentsOpen && activeThreadId === postedThreadId) {
+          boardRef.current?.revealComment(postedThreadId, panel?.getBoundingClientRect());
+        }
+        setPostedThreadId(null);
+      });
+    });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+    };
+  }, [activeThreadId, commentsOpen, postedThreadId]);
+
+  function postThread(position: XYPosition, body: string) {
+    const thread = createThread(position, body);
+    if (!thread) return false;
+
+    setPostedThreadId(thread.id);
+    return true;
+  }
 
   function focusThread(id: string) {
     const thread = openThread(id);
@@ -50,7 +85,7 @@ function App() {
               ref={boardRef}
               threads={threads}
               activeThreadId={commentsOpen ? activeThreadId : null}
-              onCreateThread={createThread}
+              onCreateThread={postThread}
               onMoveThread={moveThread}
               onSetThreadResolved={setThreadResolved}
               onSelectThread={toggleThread}
@@ -61,7 +96,7 @@ function App() {
             ref={setToolbarHost}
             className="pointer-events-none absolute inset-0 z-10"
           />
-          <CommentsPanel open={commentsOpen} toolbarHost={toolbarHost}>
+          <CommentsPanel ref={commentsPanelRef} open={commentsOpen} toolbarHost={toolbarHost}>
             <CommentsSidebar
               open={commentsOpen}
               threads={threads}

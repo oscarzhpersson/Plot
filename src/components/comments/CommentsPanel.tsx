@@ -6,10 +6,12 @@ import {
   type KeyboardEvent,
   type PointerEvent,
   type ReactNode,
+  type Ref,
 } from "react";
 import { getCommentsPanelLayout, minimumSidebarWidth } from "./commentLayout";
 
 type CommentsPanelProps = {
+  ref?: Ref<HTMLDivElement>;
   open: boolean;
   toolbarHost: HTMLDivElement | null;
   children: ReactNode;
@@ -18,7 +20,7 @@ type CommentsPanelProps = {
 const toolbarGap = 8;
 const keyboardStep = 16;
 
-export default function CommentsPanel({ open, toolbarHost, children }: CommentsPanelProps) {
+export default function CommentsPanel({ ref, open, toolbarHost, children }: CommentsPanelProps) {
   const [workspace, setWorkspace] = useState<{ width: number; sidebarRoom: number; footer: number } | null>(null);
   const [preferredWidth, setPreferredWidth] = useState<number | null>(null);
   const [resizing, setResizing] = useState(false);
@@ -105,6 +107,7 @@ export default function CommentsPanel({ open, toolbarHost, children }: CommentsP
 
   return (
     <div
+      ref={ref}
       inert={!open}
       data-comments-overlay-open={open && !docked ? "" : undefined}
       style={widthStyle}

@@ -29,9 +29,17 @@ const nodeTypes = {
 };
 
 const commentClickDistance = 4;
+const pinRevealInset = 8;
+
+function revealOffset(start: number, end: number, min: number, max: number) {
+  if (start < min) return min + pinRevealInset - start;
+  if (end > max) return max - pinRevealInset - end;
+  return 0;
+}
 
 export type BoardHandle = {
   focusComment: (position: XYPosition) => void;
+  revealComment: (id: string, sidebar?: DOMRect) => void;
 };
 
 type BoardProps = {
@@ -59,10 +67,11 @@ export default function Board({
   const [toolbarElement, setToolbarElement] = useState<HTMLDivElement | null>(null);
   const [draftPosition, setDraftPosition] = useState<XYPosition | null>(null);
   const commentPress = useRef<XYPosition | null>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
 
   const flow = useRef<Pick<
     ReactFlowInstance<BoardNode>,
-    "screenToFlowPosition" | "setCenter" | "getZoom"
+    "screenToFlowPosition" | "setCenter" | "getZoom" | "getViewport" | "setViewport"
   > | null>(null);
 
   useImperativeHandle(
@@ -76,6 +85,37 @@ export default function Board({
           zoom: Math.max(viewport.getZoom(), 1.25),
           ...viewportAnimation(boardMotion.fit),
         });
+      },
+      revealComment(id, sidebar) {
+        const viewport = flow.current;
+        const canvas = canvasRef.current;
+        const pin = canvas?.querySelector(`[data-comment-id="${CSS.escape(id)}"]`);
+        if (!viewport || !canvas || !pin) return;
+
+        const bounds = canvas.getBoundingClientRect();
+        const pinBounds = pin.getBoundingClientRect();
+        let { right, top } = bounds;
+        if (
+          sidebar && sidebar.left < right && sidebar.bottom > pinBounds.top &&
+          sidebar.top < pinBounds.bottom && sidebar.left < pinBounds.right
+        ) {
+          // An overlay can cover nearly the full canvas on narrow screens.
+          if (sidebar.left - bounds.left >= pinBounds.width + 2 * pinRevealInset) {
+            right = sidebar.left;
+          } else if (bounds.bottom - sidebar.bottom >= pinBounds.height + 2 * pinRevealInset) {
+            top = sidebar.bottom;
+          }
+        }
+
+        const dx = revealOffset(pinBounds.left, pinBounds.right, bounds.left, right);
+        const dy = revealOffset(pinBounds.top, pinBounds.bottom, top, bounds.bottom);
+        if (dx === 0 && dy === 0) return;
+
+        const { x, y, zoom } = viewport.getViewport();
+        void viewport.setViewport(
+          { x: x + dx, y: y + dy, zoom },
+          { ...viewportAnimation(boardMotion.fit), interpolate: "linear" },
+        );
       },
     }),
     [],
@@ -117,7 +157,7 @@ export default function Board({
   );
 
   return (
-    <div className="h-full w-full">
+    <div ref={canvasRef} className="h-full w-full">
       <ReactFlow
         {...graph}
         className="plot-board"

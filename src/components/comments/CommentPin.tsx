@@ -136,6 +136,7 @@ export default function CommentPin({
     >
       <button
         type="button"
+        data-comment-id={id}
         aria-label={`Open ${resolved ? "resolved " : ""}comment by ${author.name}`}
         aria-describedby={tooltipId}
         aria-pressed={selected}
