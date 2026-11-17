@@ -89,7 +89,7 @@ function ModelCardPreview({
   const [hasOpened, setHasOpened] = useState(selected);
   const [hasRendered, setHasRendered] = useState(false);
   const [generatedPoster, setGeneratedPoster] = useState(() => loadModelPoster(src));
-  const [initialPoster] = useState(() => generatedPoster ?? suppliedPoster);
+  const [initialPoster] = useState(() => suppliedPoster ?? generatedPoster);
   if (selected && !hasOpened) setHasOpened(true);
 
   const onPosterReady = useCallback((image: string) => {
@@ -100,7 +100,7 @@ function ModelCardPreview({
   const onFirstFrame = useCallback(() => setHasRendered(true), []);
   const showModel = hasOpened || selected;
   const unavailable = (
-    <PreviewPoster src={generatedPoster ?? initialPoster} status="3D preview unavailable" />
+    <PreviewPoster src={initialPoster ?? generatedPoster} status="3D preview unavailable" />
   );
   const posterStatus = showModel ? "Loading model…" : initialPoster ? undefined : "Select to load model";
 
@@ -122,7 +122,7 @@ function ModelCardPreview({
                 src={src}
                 orbitEnabled={selected}
                 onFirstFrame={onFirstFrame}
-                onPosterReady={generatedPoster ? undefined : onPosterReady}
+                onPosterReady={suppliedPoster || generatedPoster ? undefined : onPosterReady}
               />
             </Canvas>
           </Suspense>

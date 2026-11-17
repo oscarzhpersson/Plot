@@ -74,7 +74,7 @@ function ModelPreview({
     return {
       model,
       offset: bounds.getCenter(new Vector3()).negate(),
-      scale: longestSide > 0 ? 2.6 / longestSide : 1,
+      scale: longestSide > 0 ? 2.1 / longestSide : 1,
     };
   }, [scene]);
 
