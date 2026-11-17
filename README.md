@@ -1,6 +1,6 @@
 # Plot
 
-A canvas for reviewing mechanical designs, built for Encube’s frontend take-home. The starter board has a gear, a mounting bracket, a drawing, and a few review threads.
+A canvas for reviewing mechanical designs, built for Encube’s frontend take-home.
 
 ## Run locally
 
@@ -23,4 +23,4 @@ Open the local URL printed by Vite. Run `pnpm build` to create a production buil
 
 React Flow handles the viewport and card connections. The 3D cards use React Three Fiber and load their models on first selection, so opening the board doesn’t start every viewer.
 
-The board layout, connections, and comments are saved in the current browser. Open a private window to see the starter board again.
+The board layout, connections, and comments are saved in the current browser. Open a private window or clear browser cache to see the starter board again.
