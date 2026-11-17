@@ -24,3 +24,9 @@ Open the local URL printed by Vite. Run `pnpm build` to create a production buil
 React Flow handles the viewport and card connections. The 3D cards use React Three Fiber and load their models on first selection, so opening the board doesn’t start every viewer.
 
 The board layout, connections, and comments are saved in the current browser. Open a private window or clear browser cache to see the starter board again.
+
+## Deployed
+
+The application is deployed [HERE](plot-wheat.vercel.app)!
+
+Feel free to test it out.
