@@ -27,6 +27,8 @@ The board layout, connections, and comments are saved in the current browser. Op
 
 ## Deployed
 
-The application is deployed [HERE](plot-wheat.vercel.app)!
+The application is deployed [here](plot-canvas.vercel.app)!
+
+Demo video can be found [here](https://drive.google.com/file/d/1W61Iz0RgYh9uaBiV0hxfVK6gCG5mlT6g/view?usp=sharing)!
 
 Feel free to test it out.
